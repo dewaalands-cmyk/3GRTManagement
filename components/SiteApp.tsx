@@ -69,7 +69,6 @@ interface Props {
   content: SiteContentData;
   services: any[];
   events: any[];
-  galleries: any[];
   testimonials: any[];
   partners: any[];
 }
