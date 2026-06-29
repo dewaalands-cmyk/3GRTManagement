@@ -92,9 +92,6 @@ export function ServiceBlock({ title, description, imageUrl, imagePosition = "ri
       {/* Kolom Teks */}
       <Reveal className={`flex-1 ${imgLeft ? "md:order-2" : "md:order-1"}`}>
         <div className="space-y-6">
-          <span className="inline-block font-heading text-xs font-bold uppercase tracking-[0.25em] text-amber">
-            Layanan {String(index + 1).padStart(2, "0")}
-          </span>
           <h3 className="font-heading text-3xl font-black uppercase leading-tight tracking-wide text-bone drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)] md:text-4xl">
             {title}
           </h3>
