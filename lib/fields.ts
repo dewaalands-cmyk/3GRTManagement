@@ -110,7 +110,7 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     fields: [
       { name: "title", label: "Judul Layanan", type: "text", placeholder: "Combat Event Organizer" },
       { name: "description", label: "Paragraf", type: "paragraphs", help: "Tambah paragraf satu per satu. Klik + untuk paragraf baru." },
-      { name: "imageUrl", label: "Foto Layanan", type: "image", help: "Tampil di kiri atau kanan sesuai Posisi Foto." },
+      { name: "imageUrl", label: "Foto / Video Layanan", type: "image", help: "Upload foto, atau tempel URL YouTube / video (.mp4). Video diputar otomatis 1:1, foto tampil 4:3." },
       { name: "imagePosition", label: "Posisi Foto", type: "select", options: [
         { value: "right", label: "Foto di Kanan, Teks di Kiri" },
         { value: "left", label: "Foto di Kiri, Teks di Kanan" },

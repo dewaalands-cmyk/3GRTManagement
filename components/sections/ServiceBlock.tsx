@@ -17,6 +17,71 @@ function parseParagraphs(description: string | string[]): string[] {
   return description ? [description] : [];
 }
 
+function isYouTube(url: string) {
+  return /youtu\.be|youtube\.com/.test(url);
+}
+
+function isVideo(url: string) {
+  return /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url);
+}
+
+function youtubeEmbed(url: string) {
+  const m = url.match(/(?:v=|youtu\.be\/)([\w-]+)/);
+  const id = m?.[1] ?? "";
+  return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1`;
+}
+
+function MediaBlock({ url, title, imgLeft }: { url: string; title: string; imgLeft: boolean }) {
+  const accentPos = imgLeft ? "left-0" : "right-0";
+
+  if (isYouTube(url)) {
+    return (
+      <div className="group relative aspect-square w-full overflow-hidden rounded-2xl">
+        <iframe
+          src={youtubeEmbed(url)}
+          title={title}
+          allow="autoplay; loop"
+          className="absolute inset-0 h-full w-full"
+          style={{ border: 0 }}
+        />
+        <div className={`absolute bottom-0 ${accentPos} h-1 w-24 bg-gradient-to-r from-crimson to-amber`} />
+      </div>
+    );
+  }
+
+  if (isVideo(url)) {
+    return (
+      <div className="group relative aspect-square w-full overflow-hidden rounded-2xl">
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          src={url}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className={`absolute bottom-0 ${accentPos} h-1 w-24 bg-gradient-to-r from-crimson to-amber`} />
+      </div>
+    );
+  }
+
+  // Foto — rasio 4:3
+  return (
+    <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt={title}
+        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className={`absolute bottom-0 ${accentPos} h-1 w-24 bg-gradient-to-r from-crimson to-amber`} />
+    </div>
+  );
+}
+
 export function ServiceBlock({ title, description, imageUrl, imagePosition = "right", index }: Props) {
   const imgLeft = imagePosition === "left";
   const paragraphs = parseParagraphs(description);
@@ -43,19 +108,10 @@ export function ServiceBlock({ title, description, imageUrl, imagePosition = "ri
         </div>
       </Reveal>
 
-      {/* Kolom Gambar */}
+      {/* Kolom Media (foto / video) */}
       {imageUrl ? (
         <Reveal className={`w-full md:w-[45%] ${imgLeft ? "md:order-1" : "md:order-2"}`} delay={0.08}>
-          <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className={`absolute bottom-0 ${imgLeft ? "left-0" : "right-0"} h-1 w-24 bg-gradient-to-r from-crimson to-amber`} />
-          </div>
+          <MediaBlock url={imageUrl} title={title} imgLeft={imgLeft} />
         </Reveal>
       ) : (
         <div className={`hidden w-full md:block md:w-[45%] ${imgLeft ? "md:order-1" : "md:order-2"}`}>
