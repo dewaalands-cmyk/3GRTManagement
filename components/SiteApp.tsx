@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { MessageCircle, Mail, MapPin, Clock, Instagram, Youtube, ShieldCheck } from "lucide-react";
 import { Hero } from "@/components/sections/Hero";
-import { ServiceCard } from "@/components/sections/ServiceCard";
+import { ServiceBlock } from "@/components/sections/ServiceBlock";
 import { EventCard } from "@/components/sections/EventCard";
 import { PartnerStrip } from "@/components/sections/PartnerStrip";
 import { Timeline } from "@/components/sections/Timeline";
@@ -205,12 +205,17 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
             {services.length > 0 && (
               <section className="py-20 md:py-28">
                 <div className="wrap">
-                  <SectionHeading eyebrow={content.servicesIntro.eyebrow} title={content.servicesIntro.title} subtitle={content.servicesIntro.subtitle} className="max-w-2xl mb-12" />
-                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  <SectionHeading eyebrow={content.servicesIntro.eyebrow} title={content.servicesIntro.title} subtitle={content.servicesIntro.subtitle} className="max-w-2xl mb-4" />
+                  <div className="divide-y divide-white/10">
                     {services.map((s, i) => (
-                      <Reveal key={s.id} delay={(i % 3) * 0.06}>
-                        <ServiceCard title={s.title} description={s.description} icon={s.icon} />
-                      </Reveal>
+                      <ServiceBlock
+                        key={s.id}
+                        title={s.title}
+                        description={s.description}
+                        imageUrl={s.imageUrl}
+                        imagePosition={s.imagePosition ?? "right"}
+                        index={i}
+                      />
                     ))}
                   </div>
                 </div>

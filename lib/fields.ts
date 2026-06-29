@@ -104,10 +104,16 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     singular: "Layanan",
     plural: "Layanan",
     titleField: "title",
+    subtitleField: "imagePosition",
+    imageField: "imageUrl",
     fields: [
       { name: "title", label: "Nama Layanan", type: "text", placeholder: "Combat Event Organizer" },
-      { name: "description", label: "Deskripsi", type: "textarea", placeholder: "Dari konsep, venue, matchmaking, hingga eksekusi hari-H..." },
-      { name: "icon", label: "Ikon", type: "select", options: ICON_OPTIONS.map((i) => ({ value: i, label: i })) },
+      { name: "description", label: "Paragraf / Deskripsi", type: "textarea", placeholder: "Dari konsep, venue, matchmaking, hingga eksekusi hari-H..." },
+      { name: "imageUrl", label: "Foto Layanan", type: "image", help: "Upload foto atau tempel URL. Tampil di kiri atau kanan teks." },
+      { name: "imagePosition", label: "Posisi Foto", type: "select", options: [
+        { value: "right", label: "Kanan" },
+        { value: "left", label: "Kiri" },
+      ], help: "Pilih apakah foto muncul di kiri atau kanan paragraf." },
       { name: "order", label: "Urutan", type: "number" },
     ],
   },

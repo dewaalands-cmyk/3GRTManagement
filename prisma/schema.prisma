@@ -71,12 +71,13 @@ model Partner {
 }
 
 model Service {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  icon        String   @default("Swords")
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  imageUrl      String?
+  imagePosition String   @default("right")
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
 }
 
 model Package {
