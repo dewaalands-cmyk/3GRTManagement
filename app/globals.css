@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  * {
+    @apply border-line;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ink text-bone font-sans antialiased;
+  }
+  /* Heading pakai Barlow Condensed — bold, condensed, atletis */
+  h1, h2, h3, h4 {
+    @apply font-heading font-extrabold uppercase tracking-wide;
+  }
+  ::selection {
+    @apply bg-crimson text-white;
+  }
+  /* Focus ring konsisten untuk navigasi keyboard */
+  :focus-visible {
+    @apply outline-none ring-2 ring-amber ring-offset-2 ring-offset-ink;
+  }
+  /* Scrollbar gelap */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0E0F13; }
+  ::-webkit-scrollbar-thumb { background: #2a2e37; border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3f4a; }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-[92%] max-w-wrap;
+  }
+  /* Eyebrow label kecil di atas judul section */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.25em] text-amber;
+  }
+  /* Gradient teks crimson -> amber untuk aksen judul */
+  .text-gradient {
+    @apply bg-gradient-to-r from-crimson to-amber bg-clip-text text-transparent;
+  }
+  /* Kartu dasar */
+  .card {
+    @apply rounded-2xl border border-line bg-ink-2;
+  }
+}
+
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Hormati pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

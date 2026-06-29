@@ -1,0 +1,119 @@
+import { Instagram, Youtube, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
+import type { SiteContentData } from "@/lib/content";
+
+const NAV = [
+  { label: "Layanan" },
+  { label: "Event" },
+  { label: "Kontak" },
+];
+
+function TiktokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M16.5 2h-3v13.5a2.5 2.5 0 1 1-2.5-2.5c.3 0 .5 0 .8.1V9.9a5.6 5.6 0 0 0-.8-.1 5.6 5.6 0 1 0 5.6 5.6V8.3a7 7 0 0 0 4 1.3V6.3a4 4 0 0 1-4-4.3z" />
+    </svg>
+  );
+}
+
+export function Footer({ content }: { content: SiteContentData }) {
+  const c = content.contact;
+  const wa = `https://wa.me/${c.wa}`;
+
+  return (
+    <footer className="bg-white text-ink">
+      {/* Top accent bar */}
+      <div className="h-1.5 bg-gradient-to-r from-crimson via-amber to-crimson" />
+
+      <div className="mx-auto w-[92%] max-w-wrap py-16">
+        <div className="grid gap-12 border-b border-ink/10 pb-12 md:grid-cols-[2fr_1fr_1.2fr]">
+
+          {/* Brand kolom */}
+          <div>
+            <div className="mb-6">
+              {content.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={content.logoUrl} alt={content.brandName} className="h-24 w-auto object-contain" style={{ filter: "invert(1)" }} />
+              ) : (
+                <span className="font-heading text-4xl font-black uppercase tracking-widest text-ink">
+                  3GRT<span className="text-crimson">.</span>
+                </span>
+              )}
+            </div>
+            <p className="max-w-xs text-lg leading-relaxed text-ink/60">{content.footerTagline}</p>
+            <div className="mt-6 flex gap-2">
+              {[
+                { href: c.instagram, label: "Instagram", Icon: Instagram },
+                { href: c.youtube, label: "YouTube", Icon: Youtube },
+                { href: wa, label: "WhatsApp", Icon: MessageCircle },
+              ].map(({ href, label, Icon }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                  className="grid h-10 w-10 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+              <a href={c.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+                className="grid h-10 w-10 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
+                <TiktokIcon className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Navigasi */}
+          <div>
+            <h4 className="font-heading text-base font-bold uppercase tracking-[0.2em] text-crimson">Navigasi</h4>
+            <ul className="mt-6 space-y-5">
+              {NAV.map((l) => (
+                <li key={l.label}>
+                  <span className="cursor-default text-lg font-medium text-ink/70 transition-colors hover:text-crimson">{l.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Kontak */}
+          <div>
+            <h4 className="font-heading text-base font-bold uppercase tracking-[0.2em] text-crimson">Kontak</h4>
+            <ul className="mt-6 space-y-5">
+              <li>
+                <a href={wa} target="_blank" rel="noopener noreferrer"
+                  className="group flex items-center gap-4 text-lg text-ink/70 transition-colors hover:text-crimson">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
+                    <Phone className="h-5 w-5" />
+                  </span>
+                  <span>{c.waDisplay}</span>
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${c.email}`}
+                  className="group flex items-center gap-4 text-lg text-ink/70 transition-colors hover:text-crimson">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
+                    <Mail className="h-5 w-5" />
+                  </span>
+                  <span>{c.email}</span>
+                </a>
+              </li>
+              <li className="flex items-center gap-4 text-lg text-ink/70">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson">
+                  <MapPin className="h-5 w-5" />
+                </span>
+                <span>{c.location}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center justify-between gap-3 pt-8 text-xs text-ink/40 sm:flex-row">
+          <p className="text-sm font-medium">© {new Date().getFullYear()} <span className="text-ink/70 font-bold">{content.brandName}</span>. Hak cipta dilindungi.</p>
+          <p>
+            Dibuat oleh{" "}
+            <a href="https://pagiversestudio.vercel.app" target="_blank" rel="noopener noreferrer"
+              className="font-semibold text-ink/50 transition-colors hover:text-crimson">
+              Pagiverse Studio
+            </a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

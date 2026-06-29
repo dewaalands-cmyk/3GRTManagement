@@ -1,0 +1,115 @@
+// ============================================
+// 3GRT MANAGEMENT — Database Schema (Prisma)
+// LOCAL: SQLite | PRODUCTION: PostgreSQL (Neon)
+// Untuk deploy ke Neon, ganti provider ke "postgresql",
+// tambahkan kembali directUrl, dan ubah features ke String[]
+// ============================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- Admin (multi-user) ---
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+// --- Pesan masuk dari form (kontak & pendaftaran atlet) ---
+// Masuk ke dashboard dulu (status pending) untuk difilter admin.
+model Message {
+  id        String   @id @default(cuid())
+  type      String   @default("kontak") // "kontak" | "atlet"
+  name      String
+  contact   String // nomor WA / email
+  role      String? // peran: atlet/sponsor/promotor/dll
+  subject   String?
+  message   String
+  status    String   @default("pending") // "pending" | "sent"
+  createdAt DateTime @default(now())
+}
+
+// --- Event ---
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  badge       String? // mis. "INTERNASIONAL" / "SEGERA"
+  date        String // teks bebas, mis. "29-30 Nov 2025"
+  location    String?
+  description String?
+  imageUrl    String? // data URL hasil upload atau URL eksternal
+  link        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// --- Galeri (video YouTube atau foto) ---
+model Gallery {
+  id        String   @id @default(cuid())
+  title     String
+  type      String   @default("video") // "video" | "foto"
+  youtubeId String?
+  imageUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// --- Testimoni ---
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  role      String?
+  rating    Int      @default(5)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// --- Mitra / Sponsor ---
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String?
+  url       String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// --- Layanan ---
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String   @default("Swords") // nama ikon lucide
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// --- Paket Sponsorship ---
+model Package {
+  id          String   @id @default(cuid())
+  name        String
+  price       String
+  description String?
+  features    String   // JSON string — String[] di PostgreSQL, String (JSON) di SQLite
+  highlighted Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// --- Konten halaman (key-value fleksibel) ---
+// Untuk teks yang bisa diedit admin: hero, about, stats, info kontak, dll.
+model SiteContent {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String // JSON string — Json di PostgreSQL, String (JSON) di SQLite
+}

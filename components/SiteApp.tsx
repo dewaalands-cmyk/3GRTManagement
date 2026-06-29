@@ -1,0 +1,311 @@
+"use client";
+import { useState, useEffect } from "react";
+import { MessageCircle, Mail, MapPin, Clock, Instagram, Youtube, ShieldCheck } from "lucide-react";
+import { Hero } from "@/components/sections/Hero";
+import { ServiceCard } from "@/components/sections/ServiceCard";
+import { EventCard } from "@/components/sections/EventCard";
+import { PartnerStrip } from "@/components/sections/PartnerStrip";
+import { Timeline } from "@/components/sections/Timeline";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { AthleteForm } from "@/components/forms/AthleteForm";
+import { SiteNavbar } from "@/components/SiteNavbar";
+import { Footer } from "@/components/Footer";
+import type { SiteContentData } from "@/lib/content";
+
+type Section = "beranda" | "layanan" | "event" | "kontak";
+
+function Divider() {
+  return <div className="h-1.5 w-full bg-gradient-to-r from-crimson via-amber to-crimson" />;
+}
+
+function bgStyle(url?: string, overlayPct = 60): React.CSSProperties {
+  if (!url) return {};
+  const o = (overlayPct / 100).toFixed(2);
+  return {
+    backgroundImage: `linear-gradient(rgba(8,8,8,${o}), rgba(8,8,8,${o})), url(${url})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+}
+
+function isYouTube(url: string) {
+  return /youtu(\.be|be\.com)/.test(url);
+}
+function youtubeEmbed(url: string) {
+  const m = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+}
+function AboutMedia({ url }: { url: string }) {
+  const wrap = "group relative aspect-square w-full overflow-hidden rounded-2xl transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,168,67,0.15)]";
+  if (isYouTube(url)) {
+    return (
+      <div className={wrap}>
+        <iframe src={youtubeEmbed(url)} className="absolute inset-0 h-full w-full transition-transform duration-500 group-hover:scale-105" allowFullScreen title="About video" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      </div>
+    );
+  }
+  if (/\.(mp4|webm|ogg)$/i.test(url)) {
+    return (
+      <div className={wrap}>
+        <video src={url} controls className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      </div>
+    );
+  }
+  return (
+    <div className={wrap}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url} alt="Tentang Kami" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    </div>
+  );
+}
+
+interface Props {
+  content: SiteContentData;
+  services: any[];
+  events: any[];
+  galleries: any[];
+  testimonials: any[];
+  partners: any[];
+}
+
+export function SiteApp({ content, services, events, testimonials, partners }: Props) {
+  const [active, setActive] = useState<Section>("beranda");
+
+  useEffect(() => {
+    const scale = content.fontScale ?? 100;
+    document.documentElement.style.fontSize = `${scale}%`;
+    return () => { document.documentElement.style.fontSize = ""; };
+  }, [content.fontScale]);
+
+  const navigate = (s: Section) => {
+    setActive(s);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const c = content.contact;
+  const wa = `https://wa.me/${c.wa}`;
+
+  const contactRows = [
+    { icon: MessageCircle, label: "WhatsApp", value: c.waDisplay, href: wa, color: "text-[#25D366]" },
+    { icon: Mail, label: "Email", value: c.email, href: `mailto:${c.email}`, color: "text-crimson" },
+    { icon: MapPin, label: "Lokasi", value: c.location, color: "text-amber" },
+    { icon: Clock, label: "Venue", value: c.address, color: "text-bone" },
+  ];
+
+  return (
+    <>
+      <SiteNavbar active={active} onNavigate={navigate} logoUrl={content.logoUrl} />
+
+      <main className="min-h-screen">
+
+        {/* ===== BERANDA ===== */}
+        {active === "beranda" && (
+          <div key="beranda">
+            <Hero content={content} onNavigate={navigate} />
+            <Divider />
+
+            {/* Tentang — digabung ke Beranda */}
+            <div style={bgStyle(content.tentangBg, content.bgOverlay)}>
+              <section className="py-20 md:py-28">
+                <div className="wrap">
+                  <SectionHeading eyebrow={content.about.eyebrow} title={content.about.title} className="max-w-3xl mb-14" />
+                  <div className="grid items-center gap-14 lg:grid-cols-2">
+                    <Reveal>
+                      <div className="space-y-5">
+                        {content.about.paragraphs.map((p, i) => (
+                          <p key={i} className="font-medium leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">{p}</p>
+                        ))}
+                      </div>
+                    </Reveal>
+                    {content.about.mediaUrl && (
+                      <Reveal>
+                        <AboutMedia url={content.about.mediaUrl} />
+                      </Reveal>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              <Divider />
+              <section
+                className="py-20 md:py-28"
+                style={content.whyusBg ? bgStyle(content.whyusBg, content.bgOverlay) : {}}
+              >
+                <div className="wrap grid items-center gap-14 lg:grid-cols-2">
+                  {content.whyus.mediaUrl ? (
+                    <Reveal>
+                      <AboutMedia url={content.whyus.mediaUrl} />
+                    </Reveal>
+                  ) : (
+                    <Reveal>
+                      <ul className="space-y-3">
+                        {content.whyus.items.map((item, i) => (
+                          <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-3 px-6 py-5 transition-transform duration-200 hover:translate-x-1.5">
+                            <ShieldCheck className="h-6 w-6 shrink-0 text-amber" />
+                            <span className="font-medium text-bone/90">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Reveal>
+                  )}
+                  <div>
+                    <Reveal>
+                      <p className="eyebrow">{content.whyus.title && "Mengapa 3GRT"}</p>
+                      <h2 className="mt-5 text-3xl leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl">
+                        {content.whyus.title}
+                      </h2>
+                      {content.whyus.subtitle && (
+                        <p className="mt-4 max-w-2xl font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
+                          {content.whyus.subtitle}
+                        </p>
+                      )}
+                    </Reveal>
+                    {content.whyus.mediaUrl && (
+                      <Reveal>
+                        <ul className="mt-8 space-y-3">
+                          {content.whyus.items.map((item, i) => (
+                            <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-3 px-6 py-5 transition-transform duration-200 hover:translate-x-1.5">
+                              <ShieldCheck className="h-6 w-6 shrink-0 text-amber" />
+                              <span className="font-medium text-bone/90">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </Reveal>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              {content.timeline.length > 0 && (
+                <>
+                <Divider />
+                <section
+                  className="py-20 md:py-28"
+                  style={content.timelineBg ? bgStyle(content.timelineBg, content.bgOverlay) : {}}
+                >
+                  <div className="wrap">
+                    <SectionHeading eyebrow="Perjalanan Kami" title="Dari Garut, Menuju Panggung Dunia" align="center" className="mb-14" />
+                    <Timeline items={content.timeline} />
+                  </div>
+                </section>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ===== LAYANAN ===== */}
+        {active === "layanan" && (
+          <div key="layanan" className="pt-24" style={bgStyle(content.layananBg, content.bgOverlay)}>
+            {services.length > 0 && (
+              <section className="py-20 md:py-28">
+                <div className="wrap">
+                  <SectionHeading eyebrow={content.servicesIntro.eyebrow} title={content.servicesIntro.title} subtitle={content.servicesIntro.subtitle} className="max-w-2xl mb-12" />
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {services.map((s, i) => (
+                      <Reveal key={s.id} delay={(i % 3) * 0.06}>
+                        <ServiceCard title={s.title} description={s.description} icon={s.icon} />
+                      </Reveal>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+            <Divider />
+          </div>
+        )}
+
+        {/* ===== EVENT ===== */}
+        {active === "event" && (
+          <div key="event" className="pt-24" style={bgStyle(content.eventBg, content.bgOverlay)}>
+            <section className="py-20 md:py-28">
+              <div className="wrap">
+                <SectionHeading eyebrow="Rekam Jejak" title="Event Kami" subtitle="Panggung tempat para petarung membuktikan diri dan menulis sejarah." className="max-w-2xl mb-12" />
+                {events.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:-mx-6 md:px-6">
+                    {events.map((e) => (
+                      <div key={e.id} className="shrink-0 w-[calc(50%-8px)] snap-start min-w-[280px]">
+                        <EventCard event={e} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState title="Belum ada event" desc="Event akan segera diumumkan. Pantau terus halaman ini." />
+                )}
+              </div>
+            </section>
+            <Divider />
+          </div>
+        )}
+
+        {/* ===== KONTAK ===== */}
+        {active === "kontak" && (
+          <div key="kontak" className="pt-24" style={bgStyle(content.kontakBg, content.bgOverlay)}>
+            <section className="py-20 md:py-28">
+              <div className="wrap">
+                <SectionHeading eyebrow="Hubungi Kami" title="Mari Bangun Langkah Berikutnya" subtitle="Atlet, sponsor, atau promotor — tim 3GRT siap berdiskusi dan menyusun solusi terbaik untuk Anda." className="max-w-2xl mb-14" />
+                <div className="grid items-start gap-12 lg:grid-cols-2">
+                  <Reveal>
+                    <ul className="space-y-4">
+                      {contactRows.map((r) => {
+                        const Inner = (
+                          <>
+                            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-line bg-ink-2">
+                              <r.icon className={`h-5 w-5 ${r.color}`} />
+                            </span>
+                            <span>
+                              <span className="block font-heading text-xs font-medium uppercase tracking-wider text-muted">{r.label}</span>
+                              <span className="font-medium text-bone">{r.value}</span>
+                            </span>
+                          </>
+                        );
+                        return (
+                          <li key={r.label}>
+                            {r.href ? (
+                              <a href={r.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 transition-opacity hover:opacity-80">{Inner}</a>
+                            ) : (
+                              <div className="flex items-center gap-4">{Inner}</div>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <div className="mt-8 flex gap-3">
+                      <a href={c.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="grid h-11 w-11 place-items-center rounded-lg border border-line text-bone/70 transition-colors hover:border-amber hover:text-amber"><Instagram className="h-5 w-5" /></a>
+                      <a href={c.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="grid h-11 w-11 place-items-center rounded-lg border border-line text-bone/70 transition-colors hover:border-amber hover:text-amber"><Youtube className="h-5 w-5" /></a>
+                      <a href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="grid h-11 w-11 place-items-center rounded-lg border border-line text-bone/70 transition-colors hover:border-amber hover:text-amber"><MessageCircle className="h-5 w-5" /></a>
+                    </div>
+                  </Reveal>
+                  <Reveal>
+                    <ContactForm />
+                  </Reveal>
+                </div>
+              </div>
+            </section>
+
+            <section className="border-t border-line bg-ink-2 py-20 md:py-28">
+              <div className="wrap">
+                <SectionHeading eyebrow="Untuk Para Petarung" title="Bergabung Sebagai Atlet" subtitle="Punya semangat juang dan ingin naik ring? Daftarkan diri Anda dan tim matchmaking kami akan meninjau profil Anda." align="center" className="mb-12" />
+                <div className="mx-auto max-w-2xl">
+                  <Reveal><AthleteForm /></Reveal>
+                </div>
+              </div>
+            </section>
+            <Divider />
+          </div>
+        )}
+
+        {/* Mitra — tampil di semua halaman */}
+        <PartnerStrip partners={partners} />
+      </main>
+
+      <Footer content={content} />
+    </>
+  );
+}
