@@ -1,25 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
-declare global {
-  // eslint-disable-next-line no-var
-  var _prisma: PrismaClient | undefined;
-}
+// eslint-disable-next-line no-var
+declare global { var _prisma: PrismaClient | undefined }
 
 function buildClient(): PrismaClient {
   if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
-    // Production: Turso (libSQL)
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { createClient } = require("@libsql/client");
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { PrismaLibSQL } = require("@prisma/adapter-libsql");
-    const libsql = createClient({
+    const { PrismaLibSql } = require("@prisma/adapter-libsql") as { PrismaLibSql: new (config: { url: string; authToken: string }) => unknown };
+    const adapter = new PrismaLibSql({
       url: process.env.TURSO_DATABASE_URL,
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
-    const adapter = new PrismaLibSQL(libsql);
-    return new PrismaClient({ adapter } as any);
+    // @ts-expect-error adapter typing mismatch across prisma versions
+    return new PrismaClient({ adapter });
   }
-  // Local dev: SQLite file
   return new PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["error"] : [],
   });

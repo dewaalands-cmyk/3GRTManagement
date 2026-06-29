@@ -152,7 +152,6 @@ export function ContentEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Eyebrow" value={data.about.eyebrow} onChange={(v) => set({ about: { ...data.about, eyebrow: v } })} />
         <Field label="Judul" textarea value={data.about.title} onChange={(v) => set({ about: { ...data.about, title: v } })} />
         <StringList label="Paragraf" textarea items={data.about.paragraphs} onChange={(v) => set({ about: { ...data.about, paragraphs: v } })} />
-        <StringList label="Poin Keunggulan" items={data.about.points} onChange={(v) => set({ about: { ...data.about, points: v } })} />
       </Section>
 
       <Section title="Timeline / Perjalanan" contentKey="timeline" value={data.timeline} {...sp}>

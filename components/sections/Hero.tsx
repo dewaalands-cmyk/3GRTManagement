@@ -4,7 +4,7 @@ import type { SiteContentData } from "@/lib/content";
 
 interface Props {
   content: SiteContentData;
-  onNavigate?: (section: string) => void;
+  onNavigate?: (section: "beranda" | "layanan" | "event" | "kontak") => void;
 }
 
 export function Hero({ content, onNavigate }: Props) {

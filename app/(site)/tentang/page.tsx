@@ -31,18 +31,14 @@ export default async function TentangPage() {
               ))}
             </div>
           </Reveal>
-          <Reveal>
-            <ul className="space-y-3">
-              {about.points.map((pt, i) => (
-                <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-2 px-6 py-5">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber/15">
-                    <Check className="h-4 w-4 text-amber" />
-                  </span>
-                  <span className="font-medium text-bone/90">{pt}</span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+          {about.mediaUrl && (
+            <Reveal>
+              <div className="aspect-square w-full overflow-hidden rounded-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={about.mediaUrl} alt="Tentang Kami" className="h-full w-full object-cover" />
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 
