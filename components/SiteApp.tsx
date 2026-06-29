@@ -155,8 +155,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                   )}
                   <div>
                     <Reveal>
-                      <p className="eyebrow">{content.whyus.title && "Mengapa 3GRT"}</p>
-                      <h2 className="mt-5 text-3xl leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl">
+                      <h2 className="text-3xl leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl">
                         {content.whyus.title}
                       </h2>
                       {content.whyus.subtitle && (

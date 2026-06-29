@@ -9,8 +9,7 @@ export function PageHeader({ eyebrow, title, subtitle }: { eyebrow?: string; tit
       </div>
       <div className="wrap">
         <Reveal>
-          {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-          <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-[1.05] sm:text-5xl md:text-6xl">{title}</h1>
+          <h1 className="max-w-4xl text-4xl font-extrabold leading-[1.05] sm:text-5xl md:text-6xl">{title}</h1>
           {subtitle && <p className="mt-5 max-w-2xl text-lg text-bone/80">{subtitle}</p>}
         </Reveal>
       </div>
