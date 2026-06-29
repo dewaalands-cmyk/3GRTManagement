@@ -10,7 +10,7 @@ export function Logo({ className, logoUrl }: Props) {
     <span className={cn("inline-flex items-center gap-2.5", className)} aria-label="3GRT Management">
       {logoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt="3GRT Management" className="h-24 w-auto max-w-[240px] object-contain" />
+        <img src={logoUrl} alt="3GRT Management" className="h-32 w-auto max-w-[300px] object-contain" />
       ) : (
         <>
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-crimson to-amber shadow-glow">

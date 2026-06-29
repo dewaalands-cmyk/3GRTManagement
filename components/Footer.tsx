@@ -32,14 +32,14 @@ export function Footer({ content }: { content: SiteContentData }) {
             <div className="mb-6">
               {content.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={content.logoUrl} alt={content.brandName} className="h-24 w-auto object-contain" style={{ filter: "invert(1)" }} />
+                <img src={content.logoUrl} alt={content.brandName} className="h-40 w-auto object-contain" style={{ filter: "invert(1)" }} />
               ) : (
                 <span className="font-heading text-4xl font-black uppercase tracking-widest text-ink">
                   3GRT<span className="text-crimson">.</span>
                 </span>
               )}
             </div>
-            <p className="max-w-xs text-lg leading-relaxed text-ink/60">{content.footerTagline}</p>
+            <p className="max-w-xs text-xl leading-relaxed text-ink/60">{content.footerTagline}</p>
             <div className="mt-6 flex gap-2">
               {[
                 { href: c.instagram, label: "Instagram", Icon: Instagram },
@@ -47,24 +47,24 @@ export function Footer({ content }: { content: SiteContentData }) {
                 { href: wa, label: "WhatsApp", Icon: MessageCircle },
               ].map(({ href, label, Icon }) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                  className="grid h-10 w-10 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
-                  <Icon className="h-4 w-4" />
+                  className="grid h-12 w-12 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
+                  <Icon className="h-5 w-5" />
                 </a>
               ))}
               <a href={c.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-                className="grid h-10 w-10 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
-                <TiktokIcon className="h-4 w-4" />
+                className="grid h-12 w-12 place-items-center rounded-lg border border-ink/15 bg-ink/5 text-ink/60 transition-all duration-200 hover:border-crimson hover:bg-crimson hover:text-white">
+                <TiktokIcon className="h-5 w-5" />
               </a>
             </div>
           </div>
 
           {/* Navigasi */}
           <div>
-            <h4 className="font-heading text-base font-bold uppercase tracking-[0.2em] text-crimson">Navigasi</h4>
+            <h4 className="font-heading text-lg font-bold uppercase tracking-[0.2em] text-crimson">Navigasi</h4>
             <ul className="mt-6 space-y-5">
               {NAV.map((l) => (
                 <li key={l.label}>
-                  <span className="cursor-default text-lg font-medium text-ink/70 transition-colors hover:text-crimson">{l.label}</span>
+                  <span className="cursor-default text-xl font-medium text-ink/70 transition-colors hover:text-crimson">{l.label}</span>
                 </li>
               ))}
             </ul>
@@ -72,29 +72,29 @@ export function Footer({ content }: { content: SiteContentData }) {
 
           {/* Kontak */}
           <div>
-            <h4 className="font-heading text-base font-bold uppercase tracking-[0.2em] text-crimson">Kontak</h4>
+            <h4 className="font-heading text-lg font-bold uppercase tracking-[0.2em] text-crimson">Kontak</h4>
             <ul className="mt-6 space-y-5">
               <li>
                 <a href={wa} target="_blank" rel="noopener noreferrer"
-                  className="group flex items-center gap-4 text-lg text-ink/70 transition-colors hover:text-crimson">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
-                    <Phone className="h-5 w-5" />
+                  className="group flex items-center gap-4 text-xl text-ink/70 transition-colors hover:text-crimson">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
+                    <Phone className="h-6 w-6" />
                   </span>
                   <span>{c.waDisplay}</span>
                 </a>
               </li>
               <li>
                 <a href={`mailto:${c.email}`}
-                  className="group flex items-center gap-4 text-lg text-ink/70 transition-colors hover:text-crimson">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
-                    <Mail className="h-5 w-5" />
+                  className="group flex items-center gap-4 text-xl text-ink/70 transition-colors hover:text-crimson">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson group-hover:bg-crimson group-hover:text-white transition-colors">
+                    <Mail className="h-6 w-6" />
                   </span>
                   <span>{c.email}</span>
                 </a>
               </li>
-              <li className="flex items-center gap-4 text-lg text-ink/70">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson">
-                  <MapPin className="h-5 w-5" />
+              <li className="flex items-center gap-4 text-xl text-ink/70">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-crimson/10 text-crimson">
+                  <MapPin className="h-6 w-6" />
                 </span>
                 <span>{c.location}</span>
               </li>
@@ -103,8 +103,8 @@ export function Footer({ content }: { content: SiteContentData }) {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-3 pt-8 text-xs text-ink/40 sm:flex-row">
-          <p className="text-sm font-medium">© {new Date().getFullYear()} <span className="text-ink/70 font-bold">{content.brandName}</span>. Hak cipta dilindungi.</p>
+        <div className="flex flex-col items-center justify-between gap-3 pt-8 text-sm text-ink/40 sm:flex-row">
+          <p className="text-base font-medium">© {new Date().getFullYear()} <span className="text-ink/70 font-bold">{content.brandName}</span>. Hak cipta dilindungi.</p>
           <p>
             Dibuat oleh{" "}
             <a href="https://pagiversestudio.vercel.app" target="_blank" rel="noopener noreferrer"

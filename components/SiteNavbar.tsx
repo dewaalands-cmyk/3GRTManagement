@@ -62,7 +62,7 @@ export function SiteNavbar({ active, onNavigate, logoUrl }: Props) {
               <button
                 onClick={() => go(l.id)}
                 className={cn(
-                  "relative font-heading text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:scale-110 active:scale-95",
+                  "relative font-heading text-base font-medium uppercase tracking-wide transition-all duration-200 hover:scale-110 active:scale-95",
                   active === l.id ? "text-amber" : "text-bone/80 hover:text-bone"
                 )}
               >
