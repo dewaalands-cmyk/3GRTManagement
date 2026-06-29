@@ -30,12 +30,12 @@ async function main() {
   if ((await prisma.service.count()) === 0) {
     await prisma.service.createMany({
       data: [
-        { title: "Combat Event Organizer & Fight Gear", description: "Dari konsep, venue, matchmaking, hingga eksekusi hari-H yang rapi — plus penyediaan fight gear lengkap untuk setiap event.", icon: "Swords", order: 1 },
-        { title: "Manajemen Atlet", description: "Kami kelola karier petarung secara total: pendampingan, jadwal tanding strategis, negosiasi kontrak, hingga branding personal.", icon: "Users", order: 2 },
-        { title: "Matchmaking Presisi", description: "Penjodohan laga berbasis data — kelas, rekam jejak, gaya bertarung, dan regulasi — untuk laga yang adil dan mendebarkan.", icon: "Target", order: 3 },
-        { title: "Siaran & Distribusi Konten", description: "Produksi multi-kamera profesional dan live streaming ke audiens luas — event Anda menjangkau jauh melampaui arena.", icon: "Video", order: 4 },
-        { title: "Kemitraan & Sponsorship", description: "Paket sponsorship fleksibel yang menghubungkan brand Anda dengan audiens combat sport yang loyal.", icon: "Handshake", order: 5 },
-        { title: "Promosi & Hype Building", description: "Strategi promosi menyeluruh — teaser, narasi petarung, hingga kampanye media sosial yang membangun hype sebelum bel berbunyi.", icon: "Megaphone", order: 6 },
+        { title: "Combat Event Organizer & Fight Gear", description: JSON.stringify(["Dari konsep, venue, matchmaking, hingga eksekusi hari-H yang rapi.", "Kami menyediakan fight gear lengkap untuk setiap event."]), order: 1 },
+        { title: "Manajemen Atlet", description: JSON.stringify(["Kami kelola karier petarung secara total: pendampingan, jadwal tanding strategis, negosiasi kontrak, hingga branding personal."]), order: 2 },
+        { title: "Matchmaking Presisi", description: JSON.stringify(["Penjodohan laga berbasis data — kelas, rekam jejak, gaya bertarung, dan regulasi — untuk laga yang adil dan mendebarkan."]), order: 3 },
+        { title: "Siaran & Distribusi Konten", description: JSON.stringify(["Produksi multi-kamera profesional dan live streaming ke audiens luas — event Anda menjangkau jauh melampaui arena."]), order: 4 },
+        { title: "Kemitraan & Sponsorship", description: JSON.stringify(["Paket sponsorship fleksibel yang menghubungkan brand Anda dengan audiens combat sport yang loyal."]), order: 5 },
+        { title: "Promosi & Hype Building", description: JSON.stringify(["Strategi promosi menyeluruh — teaser, narasi petarung, hingga kampanye media sosial yang membangun hype sebelum bel berbunyi."]), order: 6 },
       ],
     });
     console.log("✅ 6 layanan dibuat");

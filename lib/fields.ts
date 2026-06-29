@@ -8,6 +8,7 @@ export type FieldType =
   | "image"
   | "boolean"
   | "tags"
+  | "paragraphs"
   | "select";
 
 export interface FieldConfig {
@@ -107,13 +108,13 @@ export const RESOURCES: Record<string, ResourceConfig> = {
     subtitleField: "imagePosition",
     imageField: "imageUrl",
     fields: [
-      { name: "title", label: "Nama Layanan", type: "text", placeholder: "Combat Event Organizer" },
-      { name: "description", label: "Paragraf / Deskripsi", type: "textarea", placeholder: "Dari konsep, venue, matchmaking, hingga eksekusi hari-H..." },
-      { name: "imageUrl", label: "Foto Layanan", type: "image", help: "Upload foto atau tempel URL. Tampil di kiri atau kanan teks." },
+      { name: "title", label: "Judul Layanan", type: "text", placeholder: "Combat Event Organizer" },
+      { name: "description", label: "Paragraf", type: "paragraphs", help: "Tambah paragraf satu per satu. Klik + untuk paragraf baru." },
+      { name: "imageUrl", label: "Foto Layanan", type: "image", help: "Tampil di kiri atau kanan sesuai Posisi Foto." },
       { name: "imagePosition", label: "Posisi Foto", type: "select", options: [
-        { value: "right", label: "Kanan" },
-        { value: "left", label: "Kiri" },
-      ], help: "Pilih apakah foto muncul di kiri atau kanan paragraf." },
+        { value: "right", label: "Foto di Kanan, Teks di Kiri" },
+        { value: "left", label: "Foto di Kiri, Teks di Kanan" },
+      ] },
       { name: "order", label: "Urutan", type: "number" },
     ],
   },

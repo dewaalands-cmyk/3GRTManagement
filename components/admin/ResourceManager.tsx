@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Save, ImageOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X, Save, ImageOff, GripVertical } from "lucide-react";
 import { RESOURCES, type FieldConfig } from "@/lib/fields";
 import { Label, Input, Textarea, Select } from "@/components/forms/FormField";
 import { ImageUpload } from "./ImageUpload";
@@ -99,6 +99,37 @@ export function ResourceManager({ resourceKey }: { resourceKey: string }) {
     if (f.type === "image") return <ImageUpload value={v || ""} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "boolean") return <Toggle checked={!!v} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "tags") return <TagsInput value={v || []} onChange={(val) => setField(f.name, val)} />;
+    if (f.type === "paragraphs") {
+      const paras: string[] = Array.isArray(v) ? v : [];
+      return (
+        <div className="space-y-2">
+          {paras.map((p, i) => (
+            <div key={i} className="flex gap-2">
+              <GripVertical className="mt-3 h-4 w-4 shrink-0 text-muted-dark" />
+              <Textarea
+                value={p}
+                onChange={(e) => setField(f.name, paras.map((x, j) => j === i ? e.target.value : x))}
+                placeholder={`Paragraf ${i + 1}...`}
+              />
+              <button
+                type="button"
+                onClick={() => setField(f.name, paras.filter((_, j) => j !== i))}
+                className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line text-bone/60 hover:border-crimson hover:text-crimson"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setField(f.name, [...paras, ""])}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-amber hover:underline"
+          >
+            <Plus className="h-4 w-4" /> Tambah Paragraf
+          </button>
+        </div>
+      );
+    }
     return <Input id={id} value={v ?? ""} onChange={(e) => setField(f.name, e.target.value)} placeholder={f.placeholder} />;
   }
 

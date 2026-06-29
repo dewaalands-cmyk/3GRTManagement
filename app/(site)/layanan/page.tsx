@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ServiceCard } from "@/components/sections/ServiceCard";
+import { ServiceBlock } from "@/components/sections/ServiceBlock";
 import { SponsorshipCard } from "@/components/sections/SponsorshipCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -22,12 +22,17 @@ export default async function LayananPage() {
       <PageHeader eyebrow={content.servicesIntro.eyebrow} title={content.servicesIntro.title} subtitle={content.servicesIntro.subtitle} />
 
       {services.length > 0 && (
-        <section className="py-20 md:py-28">
-          <div className="wrap grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="py-10 md:py-16">
+          <div className="wrap">
             {services.map((s, i) => (
-              <Reveal key={s.id} delay={(i % 3) * 0.06}>
-                <ServiceCard title={s.title} description={s.description} icon={s.icon} />
-              </Reveal>
+              <ServiceBlock
+                key={s.id}
+                title={s.title}
+                description={s.description}
+                imageUrl={s.imageUrl ?? undefined}
+                imagePosition={(s.imagePosition as "left" | "right") ?? "right"}
+                index={i}
+              />
             ))}
           </div>
         </section>
