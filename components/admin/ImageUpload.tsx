@@ -132,23 +132,23 @@ export function ImageUpload({
   return (
     <div>
       {value ? (
-        <div className="relative inline-block">
+        <div className="relative w-full overflow-hidden rounded-lg border border-line bg-ink-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={value}
             alt="Pratinjau"
-            className="h-32 w-auto rounded-lg border border-line object-contain"
+            className="max-h-64 w-full object-contain"
           />
           <button
             type="button"
             onClick={() => { onChange(""); setInfo(""); }}
-            className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-crimson text-white"
+            className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-crimson text-white shadow"
             aria-label="Hapus gambar"
           >
             <X className="h-4 w-4" />
           </button>
           {info && (
-            <p className="mt-1.5 text-xs text-amber">{info}</p>
+            <p className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs text-amber">{info}</p>
           )}
         </div>
       ) : (
