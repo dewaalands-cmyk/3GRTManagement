@@ -4,6 +4,7 @@ import { Loader2, UserPlus, Trash2, KeyRound, X, Save, ShieldCheck } from "lucid
 import { PageTitle } from "@/components/admin/PageTitle";
 import { Label, Input } from "@/components/forms/FormField";
 import { BulkCompressor } from "@/components/admin/BulkCompressor";
+import { ProxyCleanup } from "@/components/admin/ProxyCleanup";
 
 type Usr = { id: string; username: string; email?: string | null; createdAt: string };
 
@@ -107,6 +108,7 @@ export default function PengaturanPage() {
         </ul>
       )}
 
+      <ProxyCleanup />
       <BulkCompressor />
 
       {/* Modal tambah admin */}

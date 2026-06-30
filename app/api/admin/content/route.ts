@@ -15,12 +15,29 @@ export async function GET() {
   return NextResponse.json(rows.map((r) => ({ ...r, value: parseValue(r.value) })));
 }
 
+// Strip proxy URLs (e.g. /api/img?k=...) recursively so they never reach the DB.
+// If a proxy URL ends up stored, images appear broken because the proxy can't
+// find real data — it just gets the proxy URL back in an infinite loop.
+function stripProxyUrls(v: unknown): unknown {
+  if (typeof v === "string") {
+    return v.startsWith("/api/img?") ? "" : v;
+  }
+  if (Array.isArray(v)) return v.map(stripProxyUrls);
+  if (v && typeof v === "object") {
+    return Object.fromEntries(
+      Object.entries(v as Record<string, unknown>).map(([k, val]) => [k, stripProxyUrls(val)])
+    );
+  }
+  return v;
+}
+
 export async function PUT(req: Request) {
   if (!(await getSession())) return NextResponse.json({ error: "Tidak diizinkan" }, { status: 401 });
   try {
     const { key, value } = await req.json();
     if (!key) return NextResponse.json({ error: "Key wajib" }, { status: 400 });
-    const stored = typeof value === "string" ? value : JSON.stringify(value);
+    const clean = stripProxyUrls(value);
+    const stored = typeof clean === "string" ? clean : JSON.stringify(clean);
     const row = await prisma.siteContent.upsert({
       where: { key },
       update: { value: stored },
