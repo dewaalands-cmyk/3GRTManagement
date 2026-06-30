@@ -155,6 +155,11 @@ export function ContentEditor({ initial }: { initial: SiteContentData }) {
         <StringList label="Paragraf" textarea items={data.about.paragraphs} onChange={(v) => set({ about: { ...data.about, paragraphs: v } })} />
       </Section>
 
+      <Section title="Background Perjalanan Kami" contentKey="timelineBg" value={data.timelineBg ?? ""} {...sp}>
+        <p className="text-sm text-muted">Gambar latar belakang section Perjalanan Kami. Otomatis dikompres ke ≤0.5MB.</p>
+        <ImageUpload value={data.timelineBg ?? ""} onChange={(v) => set({ timelineBg: v })} />
+      </Section>
+
       <Section title="Timeline / Perjalanan" contentKey="timeline" value={data.timeline} {...sp}>
         <ObjectList label="Daftar Milestone" items={data.timeline} fields={[{ key: "year", label: "Tahun" }, { key: "title", label: "Judul" }, { key: "desc", label: "Deskripsi", textarea: true }]} blank={{ year: "", title: "", desc: "" }} onChange={(v) => set({ timeline: v })} />
       </Section>
