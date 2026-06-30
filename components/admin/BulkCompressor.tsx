@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ImageOff, Loader2, CheckCircle2, Minimize2, RefreshCw } from "lucide-react";
 
-const TARGET_BYTES = 1024 * 1024;
+const TARGET_BYTES = 512 * 1024; // 0.5 MB
 const MAX_DIM = 1920;
 
 function dataUrlBytes(dataUrl: string): number {
@@ -224,7 +224,7 @@ export function BulkCompressor() {
         <Minimize2 className="h-5 w-5 text-amber" />
         <div>
           <h3 className="font-heading font-semibold uppercase tracking-wide text-bone">Kompres Gambar Tersimpan</h3>
-          <p className="text-sm text-muted">Perkecil semua gambar base64 yang sudah tersimpan di database menjadi ≤ 1MB</p>
+          <p className="text-sm text-muted">Perkecil semua gambar base64 yang sudah tersimpan di database menjadi ≤ 0.5MB</p>
         </div>
       </div>
 

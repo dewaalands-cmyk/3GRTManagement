@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import { Upload, X, Link2, Loader2 } from "lucide-react";
 
-const TARGET_BYTES = 1024 * 1024; // 1 MB
+const TARGET_BYTES = 512 * 1024; // 0.5 MB
 const MAX_DIM = 1920;
 
 async function compressImage(file: File): Promise<string> {
@@ -149,7 +149,7 @@ export function ImageUpload({
           ) : (
             <>
               <Upload className="h-6 w-6" />
-              <span className="text-sm">Klik untuk upload (maks 20MB, otomatis dikompres ke ≤1MB)</span>
+              <span className="text-sm">Klik untuk upload (maks 20MB, otomatis dikompres ke ≤0.5MB)</span>
             </>
           )}
         </button>
