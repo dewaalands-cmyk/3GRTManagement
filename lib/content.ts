@@ -166,6 +166,10 @@ export async function getContent(opts?: { raw?: boolean }): Promise<SiteContentD
   });
   if (opts?.raw) return merged;
 
+  // Read the save-timestamp so every proxy URL includes &v=<ts>.
+  // When admin saves content the timestamp changes → CDN cache is busted automatically.
+  const version = map.has("_ts") ? Number(map.get("_ts")) || undefined : undefined;
+
   // Replace base64 data URLs with proxy URLs so HTML stays small.
   // The /api/img endpoint reads from DB and is cached by Vercel's CDN.
   const IMG_FIELDS: (keyof SiteContentData)[] = [
@@ -173,12 +177,12 @@ export async function getContent(opts?: { raw?: boolean }): Promise<SiteContentD
     "layananBg", "eventBg", "galeriBg", "kontakBg",
   ];
   for (const f of IMG_FIELDS) {
-    (merged as unknown as Record<string, unknown>)[f] = toProxyUrl(merged[f] as string, `content:${f}`);
+    (merged as unknown as Record<string, unknown>)[f] = toProxyUrl(merged[f] as string, `content:${f}`, version);
   }
-  merged.about.mediaUrl   = toProxyUrl(merged.about.mediaUrl,   "content:about:mediaUrl");
-  merged.whyus.mediaUrl   = toProxyUrl(merged.whyus.mediaUrl,   "content:whyus:mediaUrl");
+  merged.about.mediaUrl   = toProxyUrl(merged.about.mediaUrl,   "content:about:mediaUrl", version);
+  merged.whyus.mediaUrl   = toProxyUrl(merged.whyus.mediaUrl,   "content:whyus:mediaUrl", version);
   merged.heroBgSlides     = merged.heroBgSlides.map((url, i) =>
-    toProxyUrl(url, `content:heroBgSlides:${i}`)
+    toProxyUrl(url, `content:heroBgSlides:${i}`, version)
   );
 
   return merged;

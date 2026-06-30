@@ -44,6 +44,13 @@ export async function PUT(req: Request) {
       update: { value: stored },
       create: { key, value: stored },
     });
+    // Update save-timestamp so proxy URLs get a new &v= and CDN cache is busted
+    const ts = String(Date.now());
+    await prisma.siteContent.upsert({
+      where: { key: "_ts" },
+      update: { value: ts },
+      create: { key: "_ts", value: ts },
+    });
     // Invalidate ISR cache immediately so public site reflects new content
     revalidatePath("/", "layout");
     return NextResponse.json({ ...row, value: parseValue(row.value) });
