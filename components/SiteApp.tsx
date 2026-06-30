@@ -109,41 +109,65 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
             <Hero content={content} onNavigate={navigate} />
             <Divider />
 
-            {/* Tentang — digabung ke Beranda */}
-            <div style={bgStyle(content.tentangBg, content.bgOverlay)}>
-              <section className="py-20 md:py-28">
-                <div className="wrap">
-                  <SectionHeading eyebrow={content.about.eyebrow} title={content.about.title} className="max-w-3xl mb-14" />
-                  <div className="grid items-center gap-14 lg:grid-cols-2">
+            {/* Tentang — background-nya sendiri */}
+            <section className="py-20 md:py-28" style={bgStyle(content.tentangBg, content.bgOverlay)}>
+              <div className="wrap">
+                <SectionHeading eyebrow={content.about.eyebrow} title={content.about.title} className="max-w-3xl mb-14" />
+                <div className="grid items-center gap-14 lg:grid-cols-2">
+                  <Reveal>
+                    <div className="space-y-5">
+                      {content.about.paragraphs.map((p, i) => (
+                        <p key={i} className="font-medium leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">{p}</p>
+                      ))}
+                    </div>
+                  </Reveal>
+                  {content.about.mediaUrl && (
                     <Reveal>
-                      <div className="space-y-5">
-                        {content.about.paragraphs.map((p, i) => (
-                          <p key={i} className="font-medium leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">{p}</p>
-                        ))}
-                      </div>
+                      <AboutMedia url={content.about.mediaUrl} />
                     </Reveal>
-                    {content.about.mediaUrl && (
-                      <Reveal>
-                        <AboutMedia url={content.about.mediaUrl} />
-                      </Reveal>
-                    )}
-                  </div>
+                  )}
                 </div>
-              </section>
+              </div>
+            </section>
 
-              <Divider />
-              <section
-                className="py-20 md:py-28"
-                style={content.whyusBg ? bgStyle(content.whyusBg, content.bgOverlay) : {}}
-              >
-                <div className="wrap grid items-center gap-14 lg:grid-cols-2">
-                  {content.whyus.mediaUrl ? (
+            <Divider />
+
+            {/* Mengapa Kami — background-nya sendiri */}
+            <section
+              className="py-20 md:py-28"
+              style={bgStyle(content.whyusBg, content.bgOverlay)}
+            >
+              <div className="wrap grid items-center gap-14 lg:grid-cols-2">
+                {content.whyus.mediaUrl ? (
+                  <Reveal>
+                    <AboutMedia url={content.whyus.mediaUrl} />
+                  </Reveal>
+                ) : (
+                  <Reveal>
+                    <ul className="space-y-3">
+                      {content.whyus.items.map((item, i) => (
+                        <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-3 px-6 py-5 transition-transform duration-200 hover:translate-x-1.5">
+                          <ShieldCheck className="h-6 w-6 shrink-0 text-amber" />
+                          <span className="font-medium text-bone/90">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </Reveal>
+                )}
+                <div>
+                  <Reveal>
+                    <h2 className="text-3xl leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl">
+                      {content.whyus.title}
+                    </h2>
+                    {content.whyus.subtitle && (
+                      <p className="mt-4 max-w-2xl font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
+                        {content.whyus.subtitle}
+                      </p>
+                    )}
+                  </Reveal>
+                  {content.whyus.mediaUrl && (
                     <Reveal>
-                      <AboutMedia url={content.whyus.mediaUrl} />
-                    </Reveal>
-                  ) : (
-                    <Reveal>
-                      <ul className="space-y-3">
+                      <ul className="mt-8 space-y-3">
                         {content.whyus.items.map((item, i) => (
                           <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-3 px-6 py-5 transition-transform duration-200 hover:translate-x-1.5">
                             <ShieldCheck className="h-6 w-6 shrink-0 text-amber" />
@@ -153,48 +177,25 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                       </ul>
                     </Reveal>
                   )}
-                  <div>
-                    <Reveal>
-                      <h2 className="text-3xl leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] sm:text-4xl md:text-5xl">
-                        {content.whyus.title}
-                      </h2>
-                      {content.whyus.subtitle && (
-                        <p className="mt-4 max-w-2xl font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
-                          {content.whyus.subtitle}
-                        </p>
-                      )}
-                    </Reveal>
-                    {content.whyus.mediaUrl && (
-                      <Reveal>
-                        <ul className="mt-8 space-y-3">
-                          {content.whyus.items.map((item, i) => (
-                            <li key={i} className="flex items-center gap-4 rounded-xl border border-line bg-ink-3 px-6 py-5 transition-transform duration-200 hover:translate-x-1.5">
-                              <ShieldCheck className="h-6 w-6 shrink-0 text-amber" />
-                              <span className="font-medium text-bone/90">{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </Reveal>
-                    )}
-                  </div>
                 </div>
-              </section>
+              </div>
+            </section>
 
-              {content.timeline.length > 0 && (
-                <>
+            {/* Timeline — background-nya sendiri */}
+            {content.timeline.length > 0 && (
+              <>
                 <Divider />
                 <section
                   className="py-20 md:py-28"
-                  style={content.timelineBg ? bgStyle(content.timelineBg, content.bgOverlay) : {}}
+                  style={bgStyle(content.timelineBg, content.bgOverlay)}
                 >
                   <div className="wrap">
                     <SectionHeading eyebrow="Perjalanan Kami" title="Dari Garut, Menuju Panggung Dunia" align="center" className="mb-14" />
                     <Timeline items={content.timeline} />
                   </div>
                 </section>
-                </>
-              )}
-            </div>
+              </>
+            )}
           </div>
         )}
 
