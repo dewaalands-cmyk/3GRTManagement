@@ -105,40 +105,6 @@ export function Hero({ content, onNavigate }: Props) {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink" />
       </div>
 
-      {/* ── Slide dots ── */}
-      {hasSlides && slides.length > 1 && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "2rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            zIndex: 10,
-          }}
-        >
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              aria-label={`Slide ${i + 1}`}
-              style={{
-                borderRadius: "9999px",
-                transition: "all 0.3s ease",
-                width: i === current ? "1.75rem" : "0.5rem",
-                height: i === current ? "0.625rem" : "0.5rem",
-                background: i === current ? "#E63946" : "rgba(255,255,255,0.35)",
-                border: "none",
-                cursor: "pointer",
-                padding: 0,
-              }}
-            />
-          ))}
-        </div>
-      )}
-
       {/* ── Content ── */}
       <div className="mx-auto w-[92%] max-w-wrap">
         <div className="max-w-3xl">
