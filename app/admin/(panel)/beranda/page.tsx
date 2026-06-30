@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Kelola Beranda" };
 
 export default async function BerandaPage() {
-  const content = await getContent();
+  const content = await getContent({ raw: true });
   return (
     <>
       <PageTitle title="Beranda" subtitle="Edit konten yang tampil di halaman utama situs." />

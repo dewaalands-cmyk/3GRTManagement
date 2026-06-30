@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Plus, Trash2, Loader2, Check, Save } from "lucide-react";
 import { Label, Input, Textarea } from "@/components/forms/FormField";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { SiteContentData } from "@/lib/content";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -161,7 +162,12 @@ export function ContentEditor({ initial }: { initial: SiteContentData }) {
       <Section title="Mengapa Kami" contentKey="whyus" value={data.whyus} {...sp}>
         <Field label="Judul" textarea value={data.whyus.title} onChange={(v) => set({ whyus: { ...data.whyus, title: v } })} />
         <Field label="Subjudul" textarea value={data.whyus.subtitle} onChange={(v) => set({ whyus: { ...data.whyus, subtitle: v } })} />
-        <StringList label="Poin" items={data.whyus.items} onChange={(v) => set({ whyus: { ...data.whyus, items: v } })} />
+        <StringList label="Poin Keunggulan" items={data.whyus.items} onChange={(v) => set({ whyus: { ...data.whyus, items: v } })} />
+        <div className="space-y-2">
+          <Label htmlFor="whyusMedia">Foto / Video 1:1</Label>
+          <p className="text-xs text-muted">Upload foto atau tempel URL YouTube/video. Tampil di sisi kiri section.</p>
+          <ImageUpload value={data.whyus.mediaUrl ?? ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
+        </div>
       </Section>
 
       <Section title="Intro Layanan" contentKey="servicesIntro" value={data.servicesIntro} {...sp}>

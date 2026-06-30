@@ -133,7 +133,8 @@ export const DEFAULT_CONTENT: SiteContentData = {
 };
 
 // Gabung default dengan nilai dari DB (per key di SiteContent).
-export async function getContent(): Promise<SiteContentData> {
+// raw=true → kembalikan data URL asli (untuk admin editor agar tidak menyimpan proxy URL).
+export async function getContent(opts?: { raw?: boolean }): Promise<SiteContentData> {
   let rows: { key: string; value: unknown }[] = [];
   try {
     const raw = await prisma.siteContent.findMany();
@@ -159,6 +160,8 @@ export async function getContent(): Promise<SiteContentData> {
       }
     }
   });
+  if (opts?.raw) return merged;
+
   // Replace base64 data URLs with proxy URLs so HTML stays small.
   // The /api/img endpoint reads from DB and is cached by Vercel's CDN.
   const IMG_FIELDS: (keyof SiteContentData)[] = [

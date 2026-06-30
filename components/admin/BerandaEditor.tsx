@@ -183,11 +183,10 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Judul" textarea value={data.whyus.title} onChange={(v) => set({ whyus: { ...data.whyus, title: v } })} />
         <Field label="Subjudul" textarea value={data.whyus.subtitle} onChange={(v) => set({ whyus: { ...data.whyus, subtitle: v } })} />
         <StringList label="Poin Keunggulan" items={data.whyus.items} onChange={(v) => set({ whyus: { ...data.whyus, items: v } })} />
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="whyusMedia">Foto / Video 1:1 (tampil di kiri)</Label>
-          <p className="mb-2 text-xs text-muted">Upload foto (JPG/PNG/WebP maks 5MB) atau tempel URL YouTube/video.</p>
+          <p className="text-xs text-muted">Upload foto atau tempel URL YouTube/video.</p>
           <ImageUpload value={data.whyus.mediaUrl ?? ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
-          <input id="whyusMedia" type="url" placeholder="atau tempel URL YouTube / video..." value={data.whyus.mediaUrl ?? ""} onChange={(e) => set({ whyus: { ...data.whyus, mediaUrl: e.target.value } })} className="mt-2 w-full rounded-lg border border-line bg-ink-3 px-4 py-2.5 text-sm text-bone placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-amber" />
         </div>
       </Section>
 
@@ -195,11 +194,10 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Eyebrow (teks kecil atas)" value={data.about.eyebrow} onChange={(v) => set({ about: { ...data.about, eyebrow: v } })} />
         <Field label="Judul" textarea value={data.about.title} onChange={(v) => set({ about: { ...data.about, title: v } })} />
         <StringList label="Paragraf" items={data.about.paragraphs} onChange={(v) => set({ about: { ...data.about, paragraphs: v } })} />
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="aboutMedia">Foto / Video 1:1 (tampil di kanan teks)</Label>
-          <p className="mb-2 text-xs text-muted">Upload foto (JPG/PNG/WebP maks 5MB) atau tempel URL YouTube/video.</p>
+          <p className="text-xs text-muted">Upload foto atau tempel URL YouTube/video.</p>
           <ImageUpload value={data.about.mediaUrl ?? ""} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
-          <input id="aboutMedia" type="url" placeholder="atau tempel URL YouTube / video..." value={data.about.mediaUrl ?? ""} onChange={(e) => set({ about: { ...data.about, mediaUrl: e.target.value } })} className="mt-2 w-full rounded-lg border border-line bg-ink-3 px-4 py-2.5 text-sm text-bone placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-amber" />
         </div>
       </Section>
 
