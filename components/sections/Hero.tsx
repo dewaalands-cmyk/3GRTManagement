@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { SiteContentData } from "@/lib/content";
@@ -9,14 +11,51 @@ interface Props {
 
 export function Hero({ content, onNavigate }: Props) {
   const h = content.hero;
+  const slides = (content.heroBgSlides ?? []).filter(Boolean);
+  const hasSlides = slides.length > 0;
+  const durationMs = Math.max(1, content.heroBgDuration ?? 5) * 1000;
+  const overlay = `rgba(8,8,8,${((content.bgOverlay ?? 60) / 100).toFixed(2)})`;
+
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!hasSlides || slides.length < 2) return;
+    const id = setInterval(() => setCurrent((i) => (i + 1) % slides.length), durationMs);
+    return () => clearInterval(id);
+  }, [hasSlides, slides.length, durationMs]);
+
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-24">
-      {/* Latar: gradient halus + grid tipis */}
+      {/* ── Background ── */}
       <div aria-hidden className="absolute inset-0 -z-10">
-        {content.heroBg ? (
+        {hasSlides ? (
           <>
-            <div className="absolute inset-0" style={{ backgroundImage: `url(${content.heroBg})`, backgroundSize: "cover", backgroundPosition: "center" }} />
-            <div className="absolute inset-0" style={{ backgroundColor: `rgba(8,8,8,${((content.bgOverlay ?? 60) / 100).toFixed(2)})` }} />
+            {slides.map((url, i) => (
+              <div
+                key={i}
+                className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                style={{
+                  opacity: i === current ? 1 : 0,
+                  backgroundImage: `url(${url})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  willChange: "opacity",
+                }}
+              />
+            ))}
+            <div className="absolute inset-0" style={{ backgroundColor: overlay }} />
+          </>
+        ) : content.heroBg ? (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${content.heroBg})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="absolute inset-0" style={{ backgroundColor: overlay }} />
           </>
         ) : (
           <>
@@ -28,6 +67,25 @@ export function Hero({ content, onNavigate }: Props) {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink" />
       </div>
 
+      {/* ── Slide dots ── */}
+      {hasSlides && slides.length > 1 && (
+        <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              aria-label={`Slide ${i + 1}`}
+              className={`rounded-full transition-all duration-300 ${
+                i === current
+                  ? "h-2.5 w-7 bg-crimson shadow-glow"
+                  : "h-2 w-2 bg-white/30 hover:bg-white/60"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── Content ── */}
       <div className="mx-auto w-[92%] max-w-wrap">
         <div className="max-w-3xl">
           <p className="eyebrow animate-fade-up">{h.eyebrow}</p>

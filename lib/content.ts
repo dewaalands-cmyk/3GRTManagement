@@ -14,6 +14,8 @@ export interface SiteContentData {
   bgOverlay: number;
   fontScale: number;
   heroBg: string;
+  heroBgSlides: string[];
+  heroBgDuration: number;
   tentangBg: string;
   whyusBg: string;
   timelineBg: string;
@@ -59,6 +61,8 @@ export const DEFAULT_CONTENT: SiteContentData = {
   bgOverlay: 60,
   fontScale: 100,
   heroBg: "",
+  heroBgSlides: [],
+  heroBgDuration: 5,
   tentangBg: "",
   whyusBg: "",
   timelineBg: "",
@@ -173,6 +177,9 @@ export async function getContent(opts?: { raw?: boolean }): Promise<SiteContentD
   }
   merged.about.mediaUrl   = toProxyUrl(merged.about.mediaUrl,   "content:about:mediaUrl");
   merged.whyus.mediaUrl   = toProxyUrl(merged.whyus.mediaUrl,   "content:whyus:mediaUrl");
+  merged.heroBgSlides     = merged.heroBgSlides.map((url, i) =>
+    toProxyUrl(url, `content:heroBgSlides:${i}`)
+  );
 
   return merged;
 }

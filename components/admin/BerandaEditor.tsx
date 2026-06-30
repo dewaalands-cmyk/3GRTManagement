@@ -79,8 +79,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const SAVE_KEYS: (keyof SiteContentData)[] = [
-  "logoUrl", "fontScale", "bgOverlay", "heroBg", "hero", "stats",
-  "whyus", "about", "timeline", "tentangBg", "whyusBg", "timelineBg",
+  "logoUrl", "fontScale", "bgOverlay", "heroBg", "heroBgSlides", "heroBgDuration",
+  "hero", "stats", "whyus", "about", "timeline", "tentangBg", "whyusBg", "timelineBg",
 ];
 
 export function BerandaEditor({ initial }: { initial: SiteContentData }) {
@@ -151,9 +151,65 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <div className="mt-1 flex justify-between text-xs text-muted-dark"><span>Terang</span><span>Gelap</span></div>
       </Section>
 
-      <Section title="Background Beranda">
-        <p className="text-sm text-muted">Gambar latar untuk section Hero di halaman Beranda.</p>
-        <ImageUpload value={data.heroBg} onChange={(v) => set({ heroBg: v })} />
+      <Section title="Background Beranda (Slideshow)">
+        <p className="text-sm text-muted">
+          Upload beberapa gambar untuk slideshow otomatis. Gambar berganti sesuai durasi yang diatur.
+          Jika hanya 1 gambar, tidak ada animasi slide.
+        </p>
+
+        {/* Durasi */}
+        <div className="flex items-center gap-3">
+          <Label htmlFor="heroBgDuration">Durasi tiap slide</Label>
+          <input
+            type="number"
+            min={1}
+            max={60}
+            value={data.heroBgDuration ?? 5}
+            onChange={(e) => set({ heroBgDuration: Number(e.target.value) })}
+            className="w-20 rounded-lg border border-line bg-ink-3 px-3 py-2 text-center font-heading text-sm font-semibold text-bone focus:border-amber focus:outline-none"
+          />
+          <span className="text-sm text-muted">detik</span>
+        </div>
+
+        {/* Daftar slide */}
+        <div className="space-y-3">
+          {(data.heroBgSlides ?? []).map((slide, i) => (
+            <div key={i} className="rounded-xl border border-line bg-ink-3 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-heading text-sm font-semibold uppercase tracking-wide text-bone">
+                  Slide {i + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const s = [...(data.heroBgSlides ?? [])];
+                    s.splice(i, 1);
+                    set({ heroBgSlides: s });
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-crimson-light hover:text-crimson"
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> Hapus
+                </button>
+              </div>
+              <ImageUpload
+                value={slide}
+                onChange={(v) => {
+                  const s = [...(data.heroBgSlides ?? [])];
+                  s[i] = v;
+                  set({ heroBgSlides: s });
+                }}
+              />
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => set({ heroBgSlides: [...(data.heroBgSlides ?? []), ""] })}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-amber hover:underline"
+          >
+            <Plus className="h-4 w-4" /> Tambah Slide
+          </button>
+        </div>
       </Section>
 
       <Section title="Hero">

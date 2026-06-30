@@ -15,8 +15,11 @@ async function resolveDataUrl(key: string): Promise<string | null> {
     if (!row) return null;
     if (field) {
       try {
-        const parsed = JSON.parse(row.value as string);
-        return parsed?.[field] ?? null;
+        // row.value from Prisma Json is already parsed; fallback for raw strings
+        const parsed = typeof row.value === "string"
+          ? JSON.parse(row.value as string)
+          : row.value;
+        return (parsed as Record<string, unknown>)?.[field] as string ?? null;
       } catch { return null; }
     }
     return row.value as string;
