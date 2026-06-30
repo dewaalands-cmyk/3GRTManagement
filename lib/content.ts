@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { toProxyUrl } from "./img-proxy";
 
 // ============================================
 // KONTEN HALAMAN — default + pengambilan dari DB
@@ -158,6 +159,18 @@ export async function getContent(): Promise<SiteContentData> {
       }
     }
   });
+  // Replace base64 data URLs with proxy URLs so HTML stays small.
+  // The /api/img endpoint reads from DB and is cached by Vercel's CDN.
+  const IMG_FIELDS: (keyof SiteContentData)[] = [
+    "logoUrl", "heroBg", "tentangBg", "whyusBg", "timelineBg",
+    "layananBg", "eventBg", "galeriBg", "kontakBg",
+  ];
+  for (const f of IMG_FIELDS) {
+    (merged as unknown as Record<string, unknown>)[f] = toProxyUrl(merged[f] as string, `content:${f}`);
+  }
+  merged.about.mediaUrl   = toProxyUrl(merged.about.mediaUrl,   "content:about:mediaUrl");
+  merged.whyus.mediaUrl   = toProxyUrl(merged.whyus.mediaUrl,   "content:whyus:mediaUrl");
+
   return merged;
 }
 

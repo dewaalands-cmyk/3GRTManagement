@@ -1,23 +1,46 @@
 import { prisma } from "./prisma";
+import { toProxyUrl } from "./img-proxy";
 
 const order = [{ order: "asc" as const }, { createdAt: "desc" as const }];
 
-// Semua fungsi dibungkus try/catch supaya halaman tetap render
-// meski DB belum siap (mis. sebelum migrasi/seed).
 export async function getEvents() {
-  try { return await prisma.event.findMany({ orderBy: order }); } catch { return []; }
+  try {
+    const rows = await prisma.event.findMany({ orderBy: order });
+    return rows.map((r) => ({
+      ...r,
+      imageUrl: r.imageUrl ? toProxyUrl(r.imageUrl, `resource:events:${r.id}:imageUrl`) : null,
+    }));
+  } catch { return []; }
 }
 export async function getGalleries() {
-  try { return await prisma.gallery.findMany({ orderBy: order }); } catch { return []; }
+  try {
+    const rows = await prisma.gallery.findMany({ orderBy: order });
+    return rows.map((r) => ({
+      ...r,
+      imageUrl: r.imageUrl ? toProxyUrl(r.imageUrl, `resource:galleries:${r.id}:imageUrl`) : null,
+    }));
+  } catch { return []; }
 }
 export async function getTestimonials() {
   try { return await prisma.testimonial.findMany({ orderBy: order }); } catch { return []; }
 }
 export async function getPartners() {
-  try { return await prisma.partner.findMany({ orderBy: order }); } catch { return []; }
+  try {
+    const rows = await prisma.partner.findMany({ orderBy: order });
+    return rows.map((r) => ({
+      ...r,
+      logoUrl: r.logoUrl ? toProxyUrl(r.logoUrl, `resource:partners:${r.id}:logoUrl`) : null,
+    }));
+  } catch { return []; }
 }
 export async function getServices() {
-  try { return await prisma.service.findMany({ orderBy: order }); } catch { return []; }
+  try {
+    const rows = await prisma.service.findMany({ orderBy: order });
+    return rows.map((r) => ({
+      ...r,
+      imageUrl: r.imageUrl ? toProxyUrl(r.imageUrl, `resource:services:${r.id}:imageUrl`) : null,
+    }));
+  } catch { return []; }
 }
 export async function getPackages() {
   try {
