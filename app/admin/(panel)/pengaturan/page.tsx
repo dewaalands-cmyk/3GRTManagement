@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Loader2, UserPlus, Trash2, KeyRound, X, Save, ShieldCheck } from "lucide-react";
 import { PageTitle } from "@/components/admin/PageTitle";
 import { Label, Input } from "@/components/forms/FormField";
+import { BulkCompressor } from "@/components/admin/BulkCompressor";
 
 type Usr = { id: string; username: string; email?: string | null; createdAt: string };
 
@@ -105,6 +106,8 @@ export default function PengaturanPage() {
           ))}
         </ul>
       )}
+
+      <BulkCompressor />
 
       {/* Modal tambah admin */}
       {adding && (
