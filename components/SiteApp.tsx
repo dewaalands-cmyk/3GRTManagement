@@ -107,8 +107,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
         {active === "beranda" && (
           <div key="beranda">
             <Hero content={content} onNavigate={navigate} />
-            <Divider />
-
+            
             {/* Tentang — background-nya sendiri */}
             <section className="py-20 md:py-28" style={bgStyle(content.tentangBg, content.bgOverlay)}>
               <div className="wrap">
@@ -130,8 +129,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
               </div>
             </section>
 
-            <Divider />
-
+            
             {/* Mengapa Kami — background-nya sendiri */}
             <section
               className="py-20 md:py-28"
@@ -184,8 +182,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
             {/* Timeline — background-nya sendiri */}
             {content.timeline.length > 0 && (
               <>
-                <Divider />
-                <section
+                                <section
                   className="py-20 md:py-28"
                   style={bgStyle(content.timelineBg, content.bgOverlay)}
                 >
@@ -221,8 +218,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                 </div>
               </section>
             )}
-            <Divider />
-          </div>
+                      </div>
         )}
 
         {/* ===== EVENT ===== */}
@@ -244,8 +240,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                 )}
               </div>
             </section>
-            <Divider />
-          </div>
+                      </div>
         )}
 
         {/* ===== KONTAK ===== */}
@@ -301,8 +296,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                 </div>
               </div>
             </section>
-            <Divider />
-          </div>
+                      </div>
         )}
 
         {/* Mitra — tampil di semua halaman */}
