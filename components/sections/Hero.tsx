@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { SiteContentData } from "@/lib/content";
@@ -11,17 +11,31 @@ interface Props {
 
 export function Hero({ content, onNavigate }: Props) {
   const h = content.hero;
-  const slides = (content.heroBgSlides ?? []).filter(Boolean);
+
+  // Memoize so the array reference is stable between renders
+  const slides = useMemo(
+    () => (content.heroBgSlides ?? []).filter(Boolean),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(content.heroBgSlides)]
+  );
   const hasSlides = slides.length > 0;
   const durationMs = Math.max(1, content.heroBgDuration ?? 5) * 1000;
   const overlay = `rgba(8,8,8,${((content.bgOverlay ?? 60) / 100).toFixed(2)})`;
 
   const [current, setCurrent] = useState(0);
 
+  // Keep a ref so the interval callback always sees the latest slides.length
+  const slidesLenRef = useRef(slides.length);
+  useEffect(() => { slidesLenRef.current = slides.length; }, [slides.length]);
+
   useEffect(() => {
     if (!hasSlides || slides.length < 2) return;
-    const id = setInterval(() => setCurrent((i) => (i + 1) % slides.length), durationMs);
+    const id = setInterval(
+      () => setCurrent((i) => (i + 1) % slidesLenRef.current),
+      durationMs
+    );
     return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasSlides, slides.length, durationMs]);
 
   return (
@@ -32,14 +46,13 @@ export function Hero({ content, onNavigate }: Props) {
           <>
             {slides.map((url, i) => (
               <div
-                key={i}
+                key={url}
                 className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
                 style={{
                   opacity: i === current ? 1 : 0,
                   backgroundImage: `url(${url})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
-                  willChange: "opacity",
                 }}
               />
             ))}

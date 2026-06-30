@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "./prisma";
 import { getSession } from "./session";
 import { RESOURCES } from "./fields";
@@ -84,6 +85,7 @@ export async function createHandler(resource: string, req: Request) {
   try {
     const body = await req.json();
     const item = await d.create({ data: clean(resource, body) });
+    revalidatePath("/", "layout");
     return NextResponse.json(decodeJsonFields(resource, item), { status: 201 });
   } catch (e) {
     return NextResponse.json({ error: "Gagal menyimpan" }, { status: 400 });
@@ -97,6 +99,7 @@ export async function updateHandler(resource: string, id: string, req: Request) 
   try {
     const body = await req.json();
     const item = await d.update({ where: { id }, data: clean(resource, body) });
+    revalidatePath("/", "layout");
     return NextResponse.json(decodeJsonFields(resource, item));
   } catch (e) {
     return NextResponse.json({ error: "Gagal memperbarui" }, { status: 400 });
@@ -109,6 +112,7 @@ export async function deleteHandler(resource: string, id: string) {
   if (!d) return notFound();
   try {
     await d.delete({ where: { id } });
+    revalidatePath("/", "layout");
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: "Gagal menghapus" }, { status: 400 });

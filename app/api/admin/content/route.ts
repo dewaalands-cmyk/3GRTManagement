@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
@@ -43,6 +44,8 @@ export async function PUT(req: Request) {
       update: { value: stored },
       create: { key, value: stored },
     });
+    // Invalidate ISR cache immediately so public site reflects new content
+    revalidatePath("/", "layout");
     return NextResponse.json({ ...row, value: parseValue(row.value) });
   } catch {
     return NextResponse.json({ error: "Gagal menyimpan" }, { status: 400 });
