@@ -15,6 +15,25 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function canvasHasTransparency(canvas: HTMLCanvasElement): boolean {
+  const data = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] < 255) return true;
+  }
+  return false;
+}
+
+function binarySearch(canvas: HTMLCanvasElement, format: string): string {
+  let lo = 0.1, hi = 0.92, best = "";
+  for (let i = 0; i < 10; i++) {
+    const mid = (lo + hi) / 2;
+    const data = canvas.toDataURL(format, mid);
+    if (dataUrlBytes(data) <= TARGET_BYTES) { best = data; lo = mid; }
+    else hi = mid;
+  }
+  return best || canvas.toDataURL(format, 0.1);
+}
+
 async function compressDataUrl(dataUrl: string): Promise<string> {
   if (dataUrlBytes(dataUrl) <= TARGET_BYTES) return dataUrl;
   return new Promise((resolve) => {
@@ -28,14 +47,14 @@ async function compressDataUrl(dataUrl: string): Promise<string> {
       }
       canvas.width = w; canvas.height = h;
       canvas.getContext("2d")!.drawImage(img, 0, 0, w, h);
-      let lo = 0.1, hi = 0.92, best = "";
-      for (let i = 0; i < 10; i++) {
-        const mid = (lo + hi) / 2;
-        const data = canvas.toDataURL("image/jpeg", mid);
-        if (dataUrlBytes(data) <= TARGET_BYTES) { best = data; lo = mid; }
-        else hi = mid;
+
+      const transparent = canvasHasTransparency(canvas);
+      if (transparent) {
+        const webp = canvas.toDataURL("image/webp", 0.9);
+        resolve(webp.startsWith("data:image/webp") ? binarySearch(canvas, "image/webp") : canvas.toDataURL("image/png"));
+      } else {
+        resolve(binarySearch(canvas, "image/jpeg"));
       }
-      resolve(best || canvas.toDataURL("image/jpeg", 0.1));
     };
     img.onerror = () => resolve(dataUrl);
     img.src = dataUrl;

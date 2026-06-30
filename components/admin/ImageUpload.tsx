@@ -5,6 +5,30 @@ import { Upload, X, Link2, Loader2 } from "lucide-react";
 const TARGET_BYTES = 512 * 1024; // 0.5 MB
 const MAX_DIM = 1920;
 
+function estimateBytes(dataUrl: string): number {
+  return Math.round((dataUrl.length - dataUrl.indexOf(",") - 1) * 0.75);
+}
+
+function canvasHasTransparency(canvas: HTMLCanvasElement): boolean {
+  const ctx = canvas.getContext("2d")!;
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] < 255) return true;
+  }
+  return false;
+}
+
+function binarySearchQuality(canvas: HTMLCanvasElement, format: string): string {
+  let lo = 0.1, hi = 0.92, best = "";
+  for (let i = 0; i < 10; i++) {
+    const mid = (lo + hi) / 2;
+    const data = canvas.toDataURL(format, mid);
+    if (estimateBytes(data) <= TARGET_BYTES) { best = data; lo = mid; }
+    else hi = mid;
+  }
+  return best || canvas.toDataURL(format, 0.1);
+}
+
 async function compressImage(file: File): Promise<string> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -17,7 +41,6 @@ async function compressImage(file: File): Promise<string> {
       let w = img.naturalWidth;
       let h = img.naturalHeight;
 
-      // Perkecil dimensi jika lebih besar dari MAX_DIM
       if (w > MAX_DIM || h > MAX_DIM) {
         const ratio = Math.min(MAX_DIM / w, MAX_DIM / h);
         w = Math.round(w * ratio);
@@ -26,34 +49,28 @@ async function compressImage(file: File): Promise<string> {
 
       canvas.width = w;
       canvas.height = h;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(img, 0, 0, w, h);
+      // Biarkan background tetap transparan (jangan isi dengan warna)
+      canvas.getContext("2d")!.drawImage(img, 0, 0, w, h);
 
-      // Binary search kualitas JPEG sampai ≤ 1 MB
-      let lo = 0.1;
-      let hi = 0.92;
-      let best = "";
+      const transparent = canvasHasTransparency(canvas);
 
-      for (let i = 0; i < 10; i++) {
-        const mid = (lo + hi) / 2;
-        const data = canvas.toDataURL("image/jpeg", mid);
-        const bytes = Math.round((data.length - data.indexOf(",") - 1) * 0.75);
-        if (bytes <= TARGET_BYTES) {
-          best = data;
-          lo = mid; // bisa coba kualitas lebih tinggi
+      if (transparent) {
+        // Coba WebP (transparan + kompresi lebih baik dari PNG)
+        const webp = canvas.toDataURL("image/webp", 0.9);
+        if (webp.startsWith("data:image/webp")) {
+          resolve(binarySearchQuality(canvas, "image/webp"));
         } else {
-          hi = mid; // kurangi kualitas
+          // Browser tidak support WebP export → PNG (transparansi tetap terjaga)
+          resolve(canvas.toDataURL("image/png"));
         }
+      } else {
+        // Tidak ada transparansi → JPEG lebih kecil
+        resolve(binarySearchQuality(canvas, "image/jpeg"));
       }
-
-      // Fallback kualitas minimum jika tetap besar
-      if (!best) best = canvas.toDataURL("image/jpeg", 0.1);
-      resolve(best);
     };
 
     img.onerror = () => {
       URL.revokeObjectURL(blobUrl);
-      // Fallback: baca langsung tanpa kompresi
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
