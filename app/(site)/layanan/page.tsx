@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { ServiceBlock } from "@/components/sections/ServiceBlock";
 import { SponsorshipCard } from "@/components/sections/SponsorshipCard";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -8,7 +8,7 @@ import { CTA } from "@/components/sections/CTA";
 import { getContent } from "@/lib/content";
 import { getServices, getPackages } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Layanan & Sponsorship",
   description: "Layanan lengkap 3GRT Management: event organizer combat sport, manajemen atlet, matchmaking, siaran, hingga paket sponsorship untuk brand Anda.",
@@ -57,3 +57,4 @@ export default async function LayananPage() {
     </>
   );
 }
+

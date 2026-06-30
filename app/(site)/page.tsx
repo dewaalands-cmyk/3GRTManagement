@@ -1,8 +1,8 @@
-import { SiteApp } from "@/components/SiteApp";
+﻿import { SiteApp } from "@/components/SiteApp";
 import { getContent } from "@/lib/content";
 import { getServices, getEvents, getTestimonials, getPartners } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
   const [content, services, events, testimonials, partners] = await Promise.all([
@@ -19,3 +19,4 @@ export default async function HomePage() {
     />
   );
 }
+

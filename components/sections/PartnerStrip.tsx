@@ -1,4 +1,4 @@
-import { SmartImage } from "@/components/ui/SmartImage";
+﻿import { SmartImage } from "@/components/ui/SmartImage";
 
 interface Partner { id: string; name: string; logoUrl?: string | null; url?: string | null }
 
@@ -22,7 +22,7 @@ export function PartnerStrip({ partners }: { partners: Partner[] }) {
                 <div className="flex h-24 w-24 items-center justify-center rounded-xl border border-line bg-ink-2 p-3">
                   {p.logoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.logoUrl} alt={p.name} className="max-h-full max-w-full object-contain" />
+                    <img src={p.logoUrl} alt={p.name} loading="lazy" className="max-h-full max-w-full object-contain" />
                   ) : (
                     <span className="text-2xl font-black text-bone">{p.name.slice(0, 2).toUpperCase()}</span>
                   )}
@@ -31,7 +31,7 @@ export function PartnerStrip({ partners }: { partners: Partner[] }) {
                   <h3 className="font-heading text-base font-bold uppercase tracking-wide text-bone">{p.name}</h3>
                   {p.url && (
                     <span className="mt-2 inline-block font-heading text-xs font-semibold uppercase tracking-widest text-crimson">
-                      Kunjungi Website →
+                      Kunjungi Website â†’
                     </span>
                   )}
                 </div>
@@ -48,3 +48,4 @@ export function PartnerStrip({ partners }: { partners: Partner[] }) {
     </section>
   );
 }
+

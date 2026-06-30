@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { MessageCircle, Mail, MapPin, Clock, Instagram, Youtube } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ContactForm } from "@/components/forms/ContactForm";
@@ -7,10 +7,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { getContent } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Kontak",
-  description: "Hubungi 3GRT Management. Baik atlet, sponsor, maupun promotor — tim kami siap berdiskusi mewujudkan kolaborasi terbaik.",
+  description: "Hubungi 3GRT Management. Baik atlet, sponsor, maupun promotor â€” tim kami siap berdiskusi mewujudkan kolaborasi terbaik.",
 };
 
 export default async function KontakPage() {
@@ -27,7 +27,7 @@ export default async function KontakPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Hubungi Kami" title="Mari Bangun Langkah Berikutnya" subtitle="Atlet, sponsor, atau promotor — tim 3GRT siap berdiskusi dan menyusun solusi terbaik untuk Anda." />
+      <PageHeader eyebrow="Hubungi Kami" title="Mari Bangun Langkah Berikutnya" subtitle="Atlet, sponsor, atau promotor â€” tim 3GRT siap berdiskusi dan menyusun solusi terbaik untuk Anda." />
 
       {/* Info + form kontak */}
       <section className="py-20 md:py-28">
@@ -85,3 +85,4 @@ export default async function KontakPage() {
     </>
   );
 }
+

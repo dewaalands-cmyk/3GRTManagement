@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Izinkan gambar dari URL mana pun (admin bisa paste URL gambar).
-    // Gambar yang diupload disimpan sebagai data URL & otomatis didukung.
     remotePatterns: [{ protocol: "https", hostname: "**" }],
+    formats: ["image/avif", "image/webp"],
+  },
+  compress: true,
+  poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
   },
 };
 export default nextConfig;

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { EventCard } from "@/components/sections/EventCard";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -6,10 +6,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CTA } from "@/components/sections/CTA";
 import { getEvents } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Event",
-  description: "Daftar event combat sport yang diselenggarakan 3GRT Management — dari championship internasional hingga event mendatang.",
+  description: "Daftar event combat sport yang diselenggarakan 3GRT Management â€” dari championship internasional hingga event mendatang.",
 };
 
 export default async function EventPage() {
@@ -34,3 +34,4 @@ export default async function EventPage() {
     </>
   );
 }
+

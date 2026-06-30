@@ -54,6 +54,17 @@
 .scrollbar-hide { scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
+/* Reveal animation — replaces framer-motion */
+.reveal-wrap {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal-wrap.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Hormati pengguna yang mengurangi animasi */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

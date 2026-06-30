@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Timeline } from "@/components/sections/Timeline";
@@ -7,10 +7,10 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CTA } from "@/components/sections/CTA";
 import { getContent } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Tentang Kami",
-  description: "Mengenal 3GRT Management — perjalanan, nilai, dan komitmen kami sebagai penyelenggara event combat sport profesional di Indonesia.",
+  description: "Mengenal 3GRT Management â€” perjalanan, nilai, dan komitmen kami sebagai penyelenggara event combat sport profesional di Indonesia.",
 };
 
 export default async function TentangPage() {
@@ -56,3 +56,4 @@ export default async function TentangPage() {
     </>
   );
 }
+

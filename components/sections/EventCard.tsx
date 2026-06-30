@@ -1,4 +1,4 @@
-import { MapPin, Calendar, Hourglass } from "lucide-react";
+﻿import { MapPin, Calendar, Hourglass } from "lucide-react";
 import { SmartImage } from "@/components/ui/SmartImage";
 
 interface EventData {
@@ -56,3 +56,4 @@ export function EventCard({ event }: { event: EventData }) {
     <div className={cls}>{inner}</div>
   );
 }
+

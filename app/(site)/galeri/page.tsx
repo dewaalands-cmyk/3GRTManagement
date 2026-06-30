@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { GalleryGrid } from "@/components/sections/GalleryGrid";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { getGalleries } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Galeri",
-  description: "Momen terbaik dari arena 3GRT — video pertandingan dan foto dokumentasi event combat sport.",
+  description: "Momen terbaik dari arena 3GRT â€” video pertandingan dan foto dokumentasi event combat sport.",
 };
 
 export default async function GaleriPage() {
@@ -27,3 +27,4 @@ export default async function GaleriPage() {
     </>
   );
 }
+

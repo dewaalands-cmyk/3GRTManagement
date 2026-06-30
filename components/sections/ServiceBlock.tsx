@@ -1,4 +1,4 @@
-import { Reveal } from "@/components/ui/Reveal";
+﻿import { Reveal } from "@/components/ui/Reveal";
 
 interface Props {
   title: string;
@@ -67,7 +67,7 @@ function MediaBlock({ url, title, imgLeft }: { url: string; title: string; imgLe
     );
   }
 
-  // Foto — rasio 4:3
+  // Foto â€” rasio 4:3
   return (
     <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -122,3 +122,4 @@ export function ServiceBlock({ title, description, imageUrl, imagePosition = "ri
     </div>
   );
 }
+
