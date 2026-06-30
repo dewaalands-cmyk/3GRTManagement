@@ -12,7 +12,6 @@ interface Props {
 export function Hero({ content, onNavigate }: Props) {
   const h = content.hero;
 
-  // Memoize so the array reference is stable between renders
   const slides = useMemo(
     () => (content.heroBgSlides ?? []).filter(Boolean),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,8 +22,27 @@ export function Hero({ content, onNavigate }: Props) {
   const overlay = `rgba(8,8,8,${((content.bgOverlay ?? 60) / 100).toFixed(2)})`;
 
   const [current, setCurrent] = useState(0);
+  const [loaded, setLoaded] = useState<boolean[]>([]);
 
-  // Keep a ref so the interval callback always sees the latest slides.length
+  // Preload every slide image so there's no blank flash on first transition
+  useEffect(() => {
+    if (!hasSlides) return;
+    const imgs = slides.map((url, i) => {
+      const img = new window.Image();
+      img.onload = () =>
+        setLoaded((prev) => {
+          const next = [...prev];
+          next[i] = true;
+          return next;
+        });
+      img.src = url;
+      return img;
+    });
+    return () => imgs.forEach((img) => { img.onload = null; });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slides.join(",")]);
+
+  // Ref keeps the interval callback up-to-date without restarting the timer
   const slidesLenRef = useRef(slides.length);
   useEffect(() => { slidesLenRef.current = slides.length; }, [slides.length]);
 
@@ -35,7 +53,7 @@ export function Hero({ content, onNavigate }: Props) {
       durationMs
     );
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasSlides, slides.length, durationMs]);
 
   return (
@@ -47,12 +65,19 @@ export function Hero({ content, onNavigate }: Props) {
             {slides.map((url, i) => (
               <div
                 key={url}
-                className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
                 style={{
+                  position: "absolute",
+                  inset: 0,
+                  // Use inline transition so Tailwind purging can't remove it
                   opacity: i === current ? 1 : 0,
+                  transition: "opacity 1.2s ease-in-out",
                   backgroundImage: `url(${url})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
+                  // keep invisible slides in GPU compositing layer for instant swap
+                  willChange: "opacity",
+                  // show nothing until image is loaded (avoids gray flash)
+                  visibility: loaded[i] || i === 0 ? "visible" : "hidden",
                 }}
               />
             ))}
@@ -82,17 +107,33 @@ export function Hero({ content, onNavigate }: Props) {
 
       {/* ── Slide dots ── */}
       {hasSlides && slides.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+        <div
+          style={{
+            position: "absolute",
+            bottom: "2rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            zIndex: 10,
+          }}
+        >
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
               aria-label={`Slide ${i + 1}`}
-              className={`rounded-full transition-all duration-300 ${
-                i === current
-                  ? "h-2.5 w-7 bg-crimson shadow-glow"
-                  : "h-2 w-2 bg-white/30 hover:bg-white/60"
-              }`}
+              style={{
+                borderRadius: "9999px",
+                transition: "all 0.3s ease",
+                width: i === current ? "1.75rem" : "0.5rem",
+                height: i === current ? "0.625rem" : "0.5rem",
+                background: i === current ? "#E63946" : "rgba(255,255,255,0.35)",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }}
             />
           ))}
         </div>
