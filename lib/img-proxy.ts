@@ -6,9 +6,12 @@
  */
 export function toProxyUrl(value: string | null | undefined, key: string, version?: number): string {
   if (!value) return value ?? "";
+  const v = version ? `&v=${version}` : "";
   if (value.startsWith("data:image")) {
-    const v = version ? `&v=${version}` : "";
     return `/api/img?k=${encodeURIComponent(key)}${v}`;
+  }
+  if (value.startsWith("data:video")) {
+    return `/api/img?k=${encodeURIComponent(key)}&t=video${v}`;
   }
   return value;
 }

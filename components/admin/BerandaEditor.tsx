@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Plus, Trash2, Loader2, Check, Save } from "lucide-react";
 import { Label, Input, Textarea } from "@/components/forms/FormField";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { VideoUpload } from "@/components/admin/VideoUpload";
 import type { SiteContentData } from "@/lib/content";
 
 function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
@@ -240,9 +241,13 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Subjudul" textarea value={data.whyus.subtitle} onChange={(v) => set({ whyus: { ...data.whyus, subtitle: v } })} />
         <StringList label="Poin Keunggulan" items={data.whyus.items} onChange={(v) => set({ whyus: { ...data.whyus, items: v } })} />
         <div className="space-y-2">
-          <Label htmlFor="whyusMedia">Foto / Video 1:1 (tampil di kiri)</Label>
-          <p className="text-xs text-muted">Upload foto atau tempel URL YouTube/video.</p>
+          <Label htmlFor="whyusMedia">Foto 1:1 (tampil di kiri)</Label>
           <ImageUpload value={data.whyus.mediaUrl ?? ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="whyusVideo">Video 1:1 (tampil di kiri, menggantikan foto jika diisi)</Label>
+          <p className="text-xs text-muted">Upload file video — otomatis dikompres dan dibisukan. Atau tempel URL YouTube di atas.</p>
+          <VideoUpload value={data.whyus.mediaUrl?.startsWith("data:video") || data.whyus.mediaUrl?.includes("t=video") ? (data.whyus.mediaUrl ?? "") : ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
         </div>
       </Section>
 
@@ -251,9 +256,13 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Judul" textarea value={data.about.title} onChange={(v) => set({ about: { ...data.about, title: v } })} />
         <StringList label="Paragraf" items={data.about.paragraphs} onChange={(v) => set({ about: { ...data.about, paragraphs: v } })} />
         <div className="space-y-2">
-          <Label htmlFor="aboutMedia">Foto / Video 1:1 (tampil di kanan teks)</Label>
-          <p className="text-xs text-muted">Upload foto atau tempel URL YouTube/video.</p>
+          <Label htmlFor="aboutMedia">Foto 1:1 (tampil di kanan teks)</Label>
           <ImageUpload value={data.about.mediaUrl ?? ""} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="aboutVideo">Video 1:1 (tampil di kanan teks, menggantikan foto jika diisi)</Label>
+          <p className="text-xs text-muted">Upload file video — otomatis dikompres dan dibisukan. Atau tempel URL YouTube di kolom foto.</p>
+          <VideoUpload value={data.about.mediaUrl?.startsWith("data:video") || data.about.mediaUrl?.includes("t=video") ? (data.about.mediaUrl ?? "") : ""} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
         </div>
       </Section>
 

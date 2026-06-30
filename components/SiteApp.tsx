@@ -38,6 +38,10 @@ function youtubeEmbed(url: string) {
   const m = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 }
+function isVideoUrl(url: string) {
+  return /\.(mp4|webm|ogg)$/i.test(url) || url.includes("t=video");
+}
+
 function AboutMedia({ url }: { url: string }) {
   const wrap = "group relative aspect-square w-full overflow-hidden rounded-2xl transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,168,67,0.15)]";
   if (isYouTube(url)) {
@@ -48,10 +52,17 @@ function AboutMedia({ url }: { url: string }) {
       </div>
     );
   }
-  if (/\.(mp4|webm|ogg)$/i.test(url)) {
+  if (isVideoUrl(url)) {
     return (
       <div className={wrap}>
-        <video src={url} controls className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <video
+          src={url}
+          muted
+          autoPlay
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
     );

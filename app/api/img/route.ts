@@ -52,7 +52,7 @@ export async function GET(req: Request) {
     return new NextResponse("Server error", { status: 500 });
   }
 
-  if (!dataUrl?.startsWith("data:image")) {
+  if (!dataUrl?.startsWith("data:image") && !dataUrl?.startsWith("data:video")) {
     return new NextResponse("Not found", { status: 404 });
   }
 
