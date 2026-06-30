@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -5,12 +6,29 @@ interface Props {
   logoUrl?: string;
 }
 
+// Local static paths (e.g. /logo.png) use Next.js Image for automatic
+// WebP conversion + CDN caching. Dynamic or data URLs use a plain <img>.
+function isStaticPath(url: string) {
+  return url.startsWith("/") && !url.startsWith("/api/");
+}
+
 export function Logo({ className, logoUrl }: Props) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)} aria-label="3GRT Management">
       {logoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt="3GRT Management" className="h-32 w-auto max-w-[300px] object-contain" />
+        isStaticPath(logoUrl) ? (
+          <Image
+            src={logoUrl}
+            alt="3GRT Management"
+            width={300}
+            height={128}
+            className="h-32 w-auto max-w-[300px] object-contain"
+            priority
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logoUrl} alt="3GRT Management" className="h-32 w-auto max-w-[300px] object-contain" />
+        )
       ) : (
         <>
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-crimson to-amber shadow-glow">
