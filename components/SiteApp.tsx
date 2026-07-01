@@ -198,7 +198,7 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
                   style={bgStyle(content.timelineBg, content.bgOverlay)}
                 >
                   <div className="wrap">
-                    <SectionHeading eyebrow="Perjalanan Kami" title="Dari Garut, Menuju Panggung Dunia" align="center" className="mb-14" />
+                    <SectionHeading eyebrow="Perjalanan Kami" title="Dari Indonesia, Menuju Panggung Dunia" align="center" className="mb-14" />
                     <Timeline items={content.timeline} />
                   </div>
                 </section>
