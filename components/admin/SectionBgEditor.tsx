@@ -15,6 +15,13 @@ export function SectionBgEditor({ label, contentKey, initialValue }: Props) {
   const [saved, setSaved] = useState(false);
 
   async function save() {
+    // If the value hasn't changed from what the server gave us (still a proxy URL),
+    // skip the PUT — nothing changed and sending the proxy URL would corrupt the DB.
+    if (value === initialValue) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      return;
+    }
     setSaving(true);
     setSaved(false);
     try {

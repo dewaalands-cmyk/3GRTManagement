@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Trash2, Loader2, Check, Save } from "lucide-react";
 import { Label, Input, Textarea } from "@/components/forms/FormField";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { VideoUpload } from "@/components/admin/VideoUpload";
-import type { SiteContentData } from "@/lib/content";
+import { DEFAULT_CONTENT, type SiteContentData } from "@/lib/content";
 
 function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
   return (
@@ -79,24 +79,63 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+function Skeleton() {
+  return (
+    <div className="space-y-5">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="h-40 animate-pulse rounded-2xl border border-line bg-ink-2" />
+      ))}
+    </div>
+  );
+}
+
 const SAVE_KEYS: (keyof SiteContentData)[] = [
   "logoUrl", "fontScale", "bgOverlay", "heroBg", "heroBgSlides", "heroBgDuration",
   "hero", "stats", "whyus", "about", "timeline", "tentangBg", "whyusBg", "timelineBg",
 ];
 
-export function BerandaEditor({ initial }: { initial: SiteContentData }) {
-  const [data, setData] = useState<SiteContentData>(initial);
+export function BerandaEditor() {
+  const [data, setData] = useState<SiteContentData | null>(null);
+  const [original, setOriginal] = useState<SiteContentData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const set = (patch: Partial<SiteContentData>) => setData((d) => ({ ...d, ...patch }));
+  // Fetch content client-side so the server HTML stays small (no base64 blobs in SSR).
+  useEffect(() => {
+    fetch("/api/admin/content/full")
+      .then((r) => r.json())
+      .then((d: SiteContentData) => {
+        setData(d);
+        setOriginal(d);
+      })
+      .catch(() => {
+        setData(DEFAULT_CONTENT);
+        setOriginal(DEFAULT_CONTENT);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const set = (patch: Partial<SiteContentData>) =>
+    setData((d) => (d ? { ...d, ...patch } : d));
 
   async function saveAll() {
+    if (!data || !original) return;
     setSaving(true);
     setSaved(false);
     try {
+      // Only send PUT requests for fields that actually changed — avoids re-uploading
+      // large base64 blobs that haven't been touched, and stays under request size limits.
+      const changed = SAVE_KEYS.filter(
+        (key) => JSON.stringify(data[key]) !== JSON.stringify(original[key])
+      );
+      if (changed.length === 0) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2500);
+        return;
+      }
       await Promise.all(
-        SAVE_KEYS.map((key) =>
+        changed.map((key) =>
           fetch("/api/admin/content", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -104,6 +143,7 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
           })
         )
       );
+      setOriginal(data); // reset dirty tracking after successful save
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch {
@@ -113,9 +153,12 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
     }
   }
 
+  if (loading) return <Skeleton />;
+  if (!data) return null;
+
   return (
     <div className="space-y-5">
-      {/* Header sticky dengan tombol simpan global */}
+      {/* Header sticky */}
       <div className="sticky top-16 z-20 flex items-center justify-between rounded-2xl border border-line bg-ink-2/90 px-6 py-4 backdrop-blur-lg">
         <h1 className="font-heading text-lg font-bold uppercase tracking-wide text-bone">Kelola Beranda</h1>
         <button
@@ -130,7 +173,7 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
       </div>
 
       <Section title="Logo Situs">
-        <p className="text-sm text-muted">Logo yang tampil di pojok kiri atas navbar admin dan situs utama. Format PNG/SVG transparan direkomendasikan.</p>
+        <p className="text-sm text-muted">Format PNG/SVG transparan direkomendasikan.</p>
         <ImageUpload value={data.logoUrl} onChange={(v) => set({ logoUrl: v })} />
       </Section>
 
@@ -140,11 +183,11 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
           <input type="range" min={75} max={130} step={5} value={data.fontScale} onChange={(e) => set({ fontScale: Number(e.target.value) })} className="flex-1 accent-crimson" />
           <span className="w-14 rounded-lg border border-line bg-ink-3 px-3 py-2 text-center font-heading text-sm font-semibold text-bone">{data.fontScale}%</span>
         </div>
-        <div className="mt-1 flex justify-between text-xs text-muted-dark"><span>75% (Kecil)</span><span>130% (Besar)</span></div>
+        <div className="mt-1 flex justify-between text-xs text-muted-dark"><span>75%</span><span>130%</span></div>
       </Section>
 
       <Section title="Overlay Background">
-        <p className="text-sm text-muted">Seberapa gelap lapisan hitam di atas gambar background. Semakin tinggi = semakin gelap.</p>
+        <p className="text-sm text-muted">Seberapa gelap lapisan hitam di atas gambar background.</p>
         <div className="flex items-center gap-4">
           <input type="range" min={0} max={100} step={5} value={data.bgOverlay} onChange={(e) => set({ bgOverlay: Number(e.target.value) })} className="flex-1 accent-crimson" />
           <span className="w-14 rounded-lg border border-line bg-ink-3 px-3 py-2 text-center font-heading text-sm font-semibold text-bone">{data.bgOverlay}%</span>
@@ -153,61 +196,30 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
       </Section>
 
       <Section title="Background Beranda (Slideshow)">
-        <p className="text-sm text-muted">
-          Upload beberapa gambar untuk slideshow otomatis. Gambar berganti sesuai durasi yang diatur.
-          Jika hanya 1 gambar, tidak ada animasi slide.
-        </p>
-
-        {/* Durasi */}
+        <p className="text-sm text-muted">Upload beberapa gambar untuk slideshow otomatis. 1 gambar = tanpa animasi.</p>
         <div className="flex items-center gap-3">
           <Label htmlFor="heroBgDuration">Durasi tiap slide</Label>
           <input
-            type="number"
-            min={1}
-            max={60}
+            type="number" min={1} max={60}
             value={data.heroBgDuration ?? 5}
             onChange={(e) => set({ heroBgDuration: Number(e.target.value) })}
             className="w-20 rounded-lg border border-line bg-ink-3 px-3 py-2 text-center font-heading text-sm font-semibold text-bone focus:border-amber focus:outline-none"
           />
           <span className="text-sm text-muted">detik</span>
         </div>
-
-        {/* Daftar slide */}
         <div className="space-y-3">
           {(data.heroBgSlides ?? []).map((slide, i) => (
             <div key={i} className="rounded-xl border border-line bg-ink-3 p-4">
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-heading text-sm font-semibold uppercase tracking-wide text-bone">
-                  Slide {i + 1}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const s = [...(data.heroBgSlides ?? [])];
-                    s.splice(i, 1);
-                    set({ heroBgSlides: s });
-                  }}
-                  className="inline-flex items-center gap-1 text-xs text-crimson-light hover:text-crimson"
-                >
+                <span className="font-heading text-sm font-semibold uppercase tracking-wide text-bone">Slide {i + 1}</span>
+                <button type="button" onClick={() => { const s = [...(data.heroBgSlides ?? [])]; s.splice(i, 1); set({ heroBgSlides: s }); }} className="inline-flex items-center gap-1 text-xs text-crimson-light hover:text-crimson">
                   <Trash2 className="h-3.5 w-3.5" /> Hapus
                 </button>
               </div>
-              <ImageUpload
-                value={slide}
-                onChange={(v) => {
-                  const s = [...(data.heroBgSlides ?? [])];
-                  s[i] = v;
-                  set({ heroBgSlides: s });
-                }}
-              />
+              <ImageUpload value={slide} onChange={(v) => { const s = [...(data.heroBgSlides ?? [])]; s[i] = v; set({ heroBgSlides: s }); }} />
             </div>
           ))}
-
-          <button
-            type="button"
-            onClick={() => set({ heroBgSlides: [...(data.heroBgSlides ?? []), ""] })}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-amber hover:underline"
-          >
+          <button type="button" onClick={() => set({ heroBgSlides: [...(data.heroBgSlides ?? []), ""] })} className="inline-flex items-center gap-1.5 text-sm font-medium text-amber hover:underline">
             <Plus className="h-4 w-4" /> Tambah Slide
           </button>
         </div>
@@ -227,13 +239,7 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
       </Section>
 
       <Section title="Statistik">
-        <ObjectList
-          label="Daftar Statistik"
-          items={data.stats}
-          fields={[{ key: "value", label: "Angka (mis. 12+)" }, { key: "label", label: "Keterangan" }]}
-          blank={{ value: "", label: "" }}
-          onChange={(v) => set({ stats: v })}
-        />
+        <ObjectList label="Daftar Statistik" items={data.stats} fields={[{ key: "value", label: "Angka (mis. 12+)" }, { key: "label", label: "Keterangan" }]} blank={{ value: "", label: "" }} onChange={(v) => set({ stats: v })} />
       </Section>
 
       <Section title="Mengapa Kami (Why Us)">
@@ -241,12 +247,12 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Subjudul" textarea value={data.whyus.subtitle} onChange={(v) => set({ whyus: { ...data.whyus, subtitle: v } })} />
         <StringList label="Poin Keunggulan" items={data.whyus.items} onChange={(v) => set({ whyus: { ...data.whyus, items: v } })} />
         <div className="space-y-2">
-          <Label htmlFor="whyusMedia">Foto 1:1 (tampil di kiri)</Label>
-          <ImageUpload value={data.whyus.mediaUrl ?? ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
+          <Label htmlFor="whyusMedia">Foto 1:1</Label>
+          <ImageUpload value={data.whyus.mediaUrl?.startsWith("data:video") || data.whyus.mediaUrl?.includes("t=video") ? "" : (data.whyus.mediaUrl ?? "")} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="whyusVideo">Video 1:1 (tampil di kiri, menggantikan foto jika diisi)</Label>
-          <p className="text-xs text-muted">Upload file video — otomatis dikompres dan dibisukan. Atau tempel URL YouTube di atas.</p>
+          <Label htmlFor="whyusVideo">Video 1:1 (menggantikan foto jika diisi)</Label>
+          <p className="text-xs text-muted">Otomatis dikompres &amp; dibisukan. Atau tempel URL YouTube di kolom foto.</p>
           <VideoUpload value={data.whyus.mediaUrl?.startsWith("data:video") || data.whyus.mediaUrl?.includes("t=video") ? (data.whyus.mediaUrl ?? "") : ""} onChange={(v) => set({ whyus: { ...data.whyus, mediaUrl: v } })} />
         </div>
       </Section>
@@ -256,38 +262,29 @@ export function BerandaEditor({ initial }: { initial: SiteContentData }) {
         <Field label="Judul" textarea value={data.about.title} onChange={(v) => set({ about: { ...data.about, title: v } })} />
         <StringList label="Paragraf" items={data.about.paragraphs} onChange={(v) => set({ about: { ...data.about, paragraphs: v } })} />
         <div className="space-y-2">
-          <Label htmlFor="aboutMedia">Foto 1:1 (tampil di kanan teks)</Label>
-          <ImageUpload value={data.about.mediaUrl ?? ""} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
+          <Label htmlFor="aboutMedia">Foto 1:1</Label>
+          <ImageUpload value={data.about.mediaUrl?.startsWith("data:video") || data.about.mediaUrl?.includes("t=video") ? "" : (data.about.mediaUrl ?? "")} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="aboutVideo">Video 1:1 (tampil di kanan teks, menggantikan foto jika diisi)</Label>
-          <p className="text-xs text-muted">Upload file video — otomatis dikompres dan dibisukan. Atau tempel URL YouTube di kolom foto.</p>
+          <Label htmlFor="aboutVideo">Video 1:1 (menggantikan foto jika diisi)</Label>
+          <p className="text-xs text-muted">Otomatis dikompres &amp; dibisukan. Atau tempel URL YouTube di kolom foto.</p>
           <VideoUpload value={data.about.mediaUrl?.startsWith("data:video") || data.about.mediaUrl?.includes("t=video") ? (data.about.mediaUrl ?? "") : ""} onChange={(v) => set({ about: { ...data.about, mediaUrl: v } })} />
         </div>
       </Section>
 
       <Section title="Background Perjalanan Kami">
-        <p className="text-sm text-muted">Gambar latar untuk section Timeline / Perjalanan Kami.</p>
         <ImageUpload value={data.timelineBg ?? ""} onChange={(v) => set({ timelineBg: v })} />
       </Section>
 
       <Section title="Timeline (Perjalanan Kami)">
-        <ObjectList
-          label="Daftar Milestone"
-          items={data.timeline}
-          fields={[{ key: "year", label: "Tahun" }, { key: "title", label: "Judul" }, { key: "desc", label: "Deskripsi", textarea: true }]}
-          blank={{ year: "", title: "", desc: "" }}
-          onChange={(v) => set({ timeline: v })}
-        />
+        <ObjectList label="Daftar Milestone" items={data.timeline} fields={[{ key: "year", label: "Tahun" }, { key: "title", label: "Judul" }, { key: "desc", label: "Deskripsi", textarea: true }]} blank={{ year: "", title: "", desc: "" }} onChange={(v) => set({ timeline: v })} />
       </Section>
 
       <Section title="Background Tentang Kami">
-        <p className="text-sm text-muted">Gambar latar untuk section Tentang Kami.</p>
         <ImageUpload value={data.tentangBg} onChange={(v) => set({ tentangBg: v })} />
       </Section>
 
       <Section title="Background Mengapa Kami">
-        <p className="text-sm text-muted">Gambar latar untuk section Mengapa Kami.</p>
         <ImageUpload value={data.whyusBg} onChange={(v) => set({ whyusBg: v })} />
       </Section>
     </div>

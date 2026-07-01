@@ -5,7 +5,7 @@ import { getContent } from "@/lib/content";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kelola Layanan" };
 export default async function Page() {
-  const content = await getContent({ raw: true });
+  const content = await getContent();
   return (
     <>
       <PageTitle title="Layanan" subtitle="Kelola daftar layanan yang ditawarkan." />

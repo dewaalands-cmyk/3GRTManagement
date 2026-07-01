@@ -1,16 +1,10 @@
-import { PageTitle } from "@/components/admin/PageTitle";
 import { BerandaEditor } from "@/components/admin/BerandaEditor";
-import { getContent } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kelola Beranda" };
 
-export default async function BerandaPage() {
-  const content = await getContent({ raw: true });
-  return (
-    <>
-      <PageTitle title="Beranda" subtitle="Edit konten yang tampil di halaman utama situs." />
-      <BerandaEditor initial={content} />
-    </>
-  );
+export default function BerandaPage() {
+  // Content loaded client-side via /api/admin/content/full to avoid embedding
+  // large base64 images in server-rendered HTML (keeps initial page load fast).
+  return <BerandaEditor />;
 }

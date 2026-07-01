@@ -27,7 +27,9 @@ function bgStyle(url?: string, overlayPct = 60): React.CSSProperties {
   return {
     backgroundImage: `linear-gradient(rgba(8,8,8,${o}), rgba(8,8,8,${o})), url(${url})`,
     backgroundSize: "cover",
-    backgroundPosition: "center",
+    backgroundPosition: "center top", // center top shows the subject on portrait/mobile
+    backgroundAttachment: "scroll",   // scroll (not fixed) works correctly on iOS
+    backgroundRepeat: "no-repeat",
   };
 }
 

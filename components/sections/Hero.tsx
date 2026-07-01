@@ -57,7 +57,7 @@ export function Hero({ content, onNavigate }: Props) {
   }, [hasSlides, slides.length, durationMs]);
 
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-24">
+    <section className="relative flex min-h-screen items-center overflow-hidden pt-24" style={{ minHeight: "100dvh" }}>
       {/* ── Background ── */}
       <div aria-hidden className="absolute inset-0 -z-10">
         {hasSlides ? (
@@ -73,7 +73,8 @@ export function Hero({ content, onNavigate }: Props) {
                   transition: "opacity 1.2s ease-in-out",
                   backgroundImage: `url(${url})`,
                   backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  backgroundPosition: "center top",
+                  backgroundRepeat: "no-repeat",
                   // keep invisible slides in GPU compositing layer for instant swap
                   willChange: "opacity",
                   // show nothing until image is loaded (avoids gray flash)
@@ -90,7 +91,8 @@ export function Hero({ content, onNavigate }: Props) {
               style={{
                 backgroundImage: `url(${content.heroBg})`,
                 backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundPosition: "center top",
+                backgroundRepeat: "no-repeat",
               }}
             />
             <div className="absolute inset-0" style={{ backgroundColor: overlay }} />
