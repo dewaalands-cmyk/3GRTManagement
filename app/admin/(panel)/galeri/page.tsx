@@ -5,7 +5,7 @@ import { getContent } from "@/lib/content";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kelola Galeri" };
 export default async function Page() {
-  const content = await getContent();
+  const content = await getContent({ raw: true });
   return (
     <>
       <PageTitle title="Galeri" subtitle="Tambahkan video YouTube atau foto dokumentasi." />
