@@ -16,19 +16,25 @@ interface MerchItem {
 }
 
 function MerchCard({ item }: { item: MerchItem }) {
-  const images = item.mediaUrls ?? [];
+  const images = (item.mediaUrls ?? []).filter(Boolean);
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [errored, setErrored] = useState<Set<number>>(new Set());
 
   const prev = useCallback(() => setCurrent((c) => (c - 1 + images.length) % images.length), [images.length]);
   const next = useCallback(() => setCurrent((c) => (c + 1) % images.length), [images.length]);
 
-  // Auto-slide on hover when multiple images exist
+  // Auto-slide on hover
   useEffect(() => {
     if (!isHovered || images.length < 2) return;
     const id = setInterval(next, 2500);
     return () => clearInterval(id);
   }, [isHovered, images.length, next]);
+
+  // Reset to 0 if images change
+  useEffect(() => { setCurrent(0); setErrored(new Set()); }, [images.length]);
+
+  const visibleImages = images.filter((_, i) => !errored.has(i));
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 transition-all duration-300 hover:-translate-y-1 hover:border-amber/40 hover:shadow-[0_0_30px_rgba(212,168,67,0.1)]">
@@ -38,30 +44,37 @@ function MerchCard({ item }: { item: MerchItem }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {images.length > 0 ? (
+        {visibleImages.length > 0 ? (
           <>
-            {/* Slides */}
-            {images.map((url, i) => (
-              <div
-                key={i}
-                style={{
-                  position: "absolute", inset: 0,
-                  opacity: i === current ? 1 : 0,
-                  transition: "opacity 0.5s ease-in-out",
-                  zIndex: i === current ? 1 : 0,
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={url}
-                  alt={`${item.name} ${i + 1}`}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-            ))}
+            {/* Slides — key on URL (not index) so React destroys/creates correctly */}
+            {images.map((url, i) => {
+              if (errored.has(i)) return null;
+              const activeClamped = Math.min(current, visibleImages.length - 1);
+              const visibleIdx = visibleImages.indexOf(url);
+              const isActive = visibleIdx === activeClamped;
+              return (
+                <div
+                  key={url}
+                  style={{
+                    position: "absolute", inset: 0,
+                    opacity: isActive ? 1 : 0,
+                    transition: "opacity 0.5s ease-in-out",
+                    zIndex: isActive ? 1 : 0,
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`${item.name} ${i + 1}`}
+                    className="h-full w-full object-cover"
+                    onError={() => setErrored((prev) => new Set(prev).add(i))}
+                  />
+                </div>
+              );
+            })}
 
-            {/* Arrows — only show when multiple images */}
-            {images.length > 1 && (
+            {/* Arrows */}
+            {visibleImages.length > 1 && (
               <>
                 <button
                   type="button"
@@ -82,18 +95,25 @@ function MerchCard({ item }: { item: MerchItem }) {
 
                 {/* Dots */}
                 <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
-                  {images.map((_, i) => (
+                  {visibleImages.map((_, i) => (
                     <button
                       key={i}
                       type="button"
                       onClick={(e) => { e.preventDefault(); setCurrent(i); }}
                       className={`h-1.5 rounded-full transition-all duration-300 ${
-                        i === current ? "w-4 bg-amber" : "w-1.5 bg-white/50 hover:bg-white/80"
+                        i === Math.min(current, visibleImages.length - 1)
+                          ? "w-4 bg-amber"
+                          : "w-1.5 bg-white/50 hover:bg-white/80"
                       }`}
                       aria-label={`Foto ${i + 1}`}
                     />
                   ))}
                 </div>
+
+                {/* Counter */}
+                <span className="absolute right-2 top-2 z-10 rounded-full bg-black/50 px-2 py-0.5 font-heading text-[10px] font-semibold text-white backdrop-blur-sm">
+                  {Math.min(current, visibleImages.length - 1) + 1}/{visibleImages.length}
+                </span>
               </>
             )}
           </>
@@ -103,20 +123,13 @@ function MerchCard({ item }: { item: MerchItem }) {
           </div>
         )}
 
-        {/* Gradient overlay */}
+        {/* Gradient */}
         <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
         {/* Badge */}
         {item.badge && (
           <span className="absolute left-3 top-3 z-10 rounded-full bg-crimson px-3 py-1 font-heading text-[10px] font-bold uppercase tracking-widest text-white shadow">
             {item.badge}
-          </span>
-        )}
-
-        {/* Image count indicator */}
-        {images.length > 1 && (
-          <span className="absolute right-3 top-3 z-10 rounded-full bg-black/50 px-2 py-0.5 font-heading text-[10px] font-semibold text-white backdrop-blur-sm">
-            {current + 1}/{images.length}
           </span>
         )}
       </div>
@@ -133,9 +146,7 @@ function MerchCard({ item }: { item: MerchItem }) {
         )}
         <div className="mt-auto flex items-center justify-between pt-3">
           {item.price ? (
-            <span className="font-heading text-lg font-extrabold text-amber">
-              {item.price}
-            </span>
+            <span className="font-heading text-lg font-extrabold text-amber">{item.price}</span>
           ) : (
             <span className="font-heading text-sm text-muted">Hubungi kami</span>
           )}
