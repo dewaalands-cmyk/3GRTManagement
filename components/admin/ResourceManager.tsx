@@ -5,6 +5,7 @@ import { RESOURCES, type FieldConfig } from "@/lib/fields";
 import { Label, Input, Textarea, Select } from "@/components/forms/FormField";
 import { ImageUpload } from "./ImageUpload";
 import { MediaUpload } from "./MediaUpload";
+import { MultiImageUpload } from "./MultiImageUpload";
 import { TagsInput } from "./TagsInput";
 import { Toggle } from "./Toggle";
 
@@ -37,7 +38,7 @@ export function ResourceManager({ resourceKey }: { resourceKey: string }) {
     cfg.fields.forEach((f) => {
       obj[f.name] =
         f.type === "boolean" ? false :
-        f.type === "tags" ? [] :
+        f.type === "tags" || f.type === "multi-image" ? [] :
         f.type === "number" ? (f.name === "rating" ? 5 : 0) :
         f.type === "select" ? (f.options?.[0]?.value ?? "") : "";
     });
@@ -84,7 +85,14 @@ export function ResourceManager({ resourceKey }: { resourceKey: string }) {
     if (resourceKey === "galleries" && item.type === "video" && item.youtubeId) {
       return `https://img.youtube.com/vi/${item.youtubeId}/default.jpg`;
     }
-    return cfg.imageField ? item[cfg.imageField] || "" : "";
+    if (cfg.imageField) return item[cfg.imageField] || "";
+    // multi-image: use first item
+    const multiField = cfg.fields.find((f) => f.type === "multi-image");
+    if (multiField) {
+      const arr = item[multiField.name];
+      return Array.isArray(arr) && arr[0] ? arr[0] : "";
+    }
+    return "";
   }
 
   function renderField(f: FieldConfig) {
@@ -99,6 +107,7 @@ export function ResourceManager({ resourceKey }: { resourceKey: string }) {
     );
     if (f.type === "image") return <ImageUpload value={v || ""} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "media") return <MediaUpload value={v || ""} onChange={(val) => setField(f.name, val)} />;
+    if (f.type === "multi-image") return <MultiImageUpload value={Array.isArray(v) ? v : []} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "boolean") return <Toggle checked={!!v} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "tags") return <TagsInput value={v || []} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "paragraphs") {

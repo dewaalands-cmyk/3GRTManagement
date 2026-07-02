@@ -31,6 +31,7 @@ async function authed() {
 const JSON_FIELDS: Record<string, string[]> = {
   packages: ["features"],
   services: ["description"],
+  merchandises: ["mediaUrls"],
 };
 
 function encodeJsonFields(resource: string, data: Record<string, any>) {
@@ -62,7 +63,7 @@ function clean(resource: string, body: Record<string, any>) {
     let v = body[f.name];
     if (f.type === "number") v = Number(v) || 0;
     else if (f.type === "boolean") v = Boolean(v);
-    else if (f.type === "tags" || f.type === "paragraphs") v = Array.isArray(v) ? v.filter(Boolean) : [];
+    else if (f.type === "tags" || f.type === "paragraphs" || f.type === "multi-image") v = Array.isArray(v) ? v.filter(Boolean) : [];
     else v = v ?? "";
     out[f.name] = v;
   }

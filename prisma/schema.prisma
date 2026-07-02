@@ -102,7 +102,7 @@ model Merchandise {
   name        String
   description String?
   price       String?
-  mediaUrl    String?
+  mediaUrls   String?
   link        String?
   badge       String?
   order       Int      @default(0)

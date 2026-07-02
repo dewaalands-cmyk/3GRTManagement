@@ -26,16 +26,25 @@ async function resolveDataUrl(key: string): Promise<string | null> {
   }
 
   if (type === "resource") {
-    const [resource, id, field] = rest;
+    const [resource, id, field, indexStr] = rest;
     type AnyRecord = Record<string, string | null>;
     const queries: Record<string, () => Promise<AnyRecord | null>> = {
-      services:  () => prisma.service.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
-      events:    () => prisma.event.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
-      partners:  () => prisma.partner.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
-      galleries: () => prisma.gallery.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
+      services:      () => prisma.service.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
+      events:        () => prisma.event.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
+      partners:      () => prisma.partner.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
+      galleries:     () => prisma.gallery.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
+      merchandises:  () => prisma.merchandise.findUnique({ where: { id } }) as Promise<AnyRecord | null>,
     };
     const row = await queries[resource]?.();
-    return row?.[field] ?? null;
+    const val = row?.[field] ?? null;
+    // Support array index: resource:merchandises:id:mediaUrls:0
+    if (indexStr !== undefined && typeof val === "string") {
+      try {
+        const arr = JSON.parse(val);
+        return Array.isArray(arr) ? (arr[Number(indexStr)] ?? null) : null;
+      } catch { return null; }
+    }
+    return val;
   }
 
   return null;

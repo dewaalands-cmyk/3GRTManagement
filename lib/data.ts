@@ -56,9 +56,17 @@ export async function getPackages() {
 export async function getMerchandises() {
   try {
     const rows = await prisma.merchandise.findMany({ orderBy: order });
-    return rows.map((r) => ({
-      ...r,
-      mediaUrl: r.mediaUrl ? toProxyUrl(r.mediaUrl, `resource:merchandises:${r.id}:mediaUrl`) : null,
-    }));
+    return rows.map((r) => {
+      let mediaUrls: string[] = [];
+      if (r.mediaUrls) {
+        try { mediaUrls = JSON.parse(r.mediaUrls as string); } catch { mediaUrls = []; }
+      }
+      return {
+        ...r,
+        mediaUrls: mediaUrls.map((url, i) =>
+          toProxyUrl(url, `resource:merchandises:${r.id}:mediaUrls:${i}`)
+        ),
+      };
+    });
   } catch { return []; }
 }
