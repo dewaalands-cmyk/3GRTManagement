@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, House, CalendarDays, Images, MessageSquareQuote, Handshake,
-  Swords, BadgeDollarSign, FileText, Inbox, Settings, LogOut, Menu, ExternalLink,
+  Swords, BadgeDollarSign, FileText, Inbox, Settings, LogOut, Menu, ExternalLink, ShoppingBag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +32,12 @@ const NAV_GROUPS = [
     label: "Event",
     items: [
       { href: "/admin/event", label: "Event", icon: CalendarDays },
+    ],
+  },
+  {
+    label: "Merchandise",
+    items: [
+      { href: "/admin/merchandise", label: "Merchandise", icon: ShoppingBag },
     ],
   },
   {

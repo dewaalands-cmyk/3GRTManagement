@@ -6,6 +6,7 @@ import { ServiceBlock } from "@/components/sections/ServiceBlock";
 import { EventCard } from "@/components/sections/EventCard";
 import { PartnerStrip } from "@/components/sections/PartnerStrip";
 import { Timeline } from "@/components/sections/Timeline";
+import { MerchGrid } from "@/components/sections/MerchGrid";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -15,7 +16,7 @@ import { SiteNavbar } from "@/components/SiteNavbar";
 import { Footer } from "@/components/Footer";
 import type { SiteContentData } from "@/lib/content";
 
-type Section = "beranda" | "layanan" | "event" | "kontak";
+type Section = "beranda" | "layanan" | "event" | "kontak" | "merch";
 
 function Divider() {
   return <div className="h-1.5 w-full bg-gradient-to-r from-crimson via-amber to-crimson" />;
@@ -84,9 +85,10 @@ interface Props {
   events: any[];
   testimonials: any[];
   partners: any[];
+  merchandises: any[];
 }
 
-export function SiteApp({ content, services, events, testimonials, partners }: Props) {
+export function SiteApp({ content, services, events, testimonials, partners, merchandises }: Props) {
   const [active, setActive] = useState<Section>("beranda");
 
   useEffect(() => {
@@ -310,6 +312,17 @@ export function SiteApp({ content, services, events, testimonials, partners }: P
               </div>
             </section>
                       </div>
+        )}
+
+        {/* ===== MERCHANDISE ===== */}
+        {active === "merch" && (
+          <div key="merch" className="pt-24" style={bgStyle(content.merchBg, content.bgOverlay)}>
+            <section className="py-20 md:py-28">
+              <div className="wrap">
+                <MerchGrid items={merchandises} />
+              </div>
+            </section>
+          </div>
         )}
 
         {/* Mitra — tampil di semua halaman */}

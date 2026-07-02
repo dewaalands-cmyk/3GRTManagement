@@ -53,3 +53,12 @@ export async function getPackages() {
     }));
   } catch { return []; }
 }
+export async function getMerchandises() {
+  try {
+    const rows = await prisma.merchandise.findMany({ orderBy: order });
+    return rows.map((r) => ({
+      ...r,
+      mediaUrl: r.mediaUrl ? toProxyUrl(r.mediaUrl, `resource:merchandises:${r.id}:mediaUrl`) : null,
+    }));
+  } catch { return []; }
+}

@@ -23,6 +23,7 @@ export interface SiteContentData {
   eventBg: string;
   galeriBg: string;
   kontakBg: string;
+  merchBg: string;
   brandName: string;
   hero: {
     eyebrow: string;
@@ -70,6 +71,7 @@ export const DEFAULT_CONTENT: SiteContentData = {
   eventBg: "",
   galeriBg: "",
   kontakBg: "",
+  merchBg: "",
   brandName: "3GRT Management",
   hero: {
     eyebrow: "Penyelenggara Combat Sport Profesional — Garut, Indonesia",
@@ -174,7 +176,7 @@ export async function getContent(opts?: { raw?: boolean }): Promise<SiteContentD
   // The /api/img endpoint reads from DB and is cached by Vercel's CDN.
   const IMG_FIELDS: (keyof SiteContentData)[] = [
     "logoUrl", "heroBg", "tentangBg", "whyusBg", "timelineBg",
-    "layananBg", "eventBg", "galeriBg", "kontakBg",
+    "layananBg", "eventBg", "galeriBg", "kontakBg", "merchBg",
   ];
   for (const f of IMG_FIELDS) {
     (merged as unknown as Record<string, unknown>)[f] = toProxyUrl(merged[f] as string, `content:${f}`, version);

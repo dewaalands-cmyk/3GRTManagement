@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Loader2, X, Save, ImageOff, GripVertical } from "
 import { RESOURCES, type FieldConfig } from "@/lib/fields";
 import { Label, Input, Textarea, Select } from "@/components/forms/FormField";
 import { ImageUpload } from "./ImageUpload";
+import { MediaUpload } from "./MediaUpload";
 import { TagsInput } from "./TagsInput";
 import { Toggle } from "./Toggle";
 
@@ -97,6 +98,7 @@ export function ResourceManager({ resourceKey }: { resourceKey: string }) {
       </Select>
     );
     if (f.type === "image") return <ImageUpload value={v || ""} onChange={(val) => setField(f.name, val)} />;
+    if (f.type === "media") return <MediaUpload value={v || ""} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "boolean") return <Toggle checked={!!v} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "tags") return <TagsInput value={v || []} onChange={(val) => setField(f.name, val)} />;
     if (f.type === "paragraphs") {

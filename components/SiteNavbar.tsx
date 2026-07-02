@@ -10,6 +10,7 @@ const LINKS = [
   { id: "layanan", label: "Layanan" },
   { id: "event", label: "Event" },
   { id: "kontak", label: "Kontak" },
+  { id: "merch", label: "Merchandise" },
 ] as const;
 
 type Section = typeof LINKS[number]["id"];

@@ -6,6 +6,7 @@ export type FieldType =
   | "textarea"
   | "number"
   | "image"
+  | "media"
   | "boolean"
   | "tags"
   | "paragraphs"
@@ -131,6 +132,23 @@ export const RESOURCES: Record<string, ResourceConfig> = {
       { name: "features", label: "Benefit", type: "tags", help: "Ketik benefit lalu tekan Enter untuk menambah." },
       { name: "highlighted", label: "Tandai sebagai paket unggulan", type: "boolean" },
       { name: "order", label: "Urutan", type: "number" },
+    ],
+  },
+  merchandises: {
+    key: "merchandises",
+    singular: "Merchandise",
+    plural: "Merchandise",
+    titleField: "name",
+    subtitleField: "price",
+    imageField: "mediaUrl",
+    fields: [
+      { name: "name", label: "Nama Produk", type: "text", placeholder: "Kaos 3GRT Championship" },
+      { name: "badge", label: "Badge (opsional)", type: "text", placeholder: "NEW / TERLARIS / TERBATAS", help: "Label kecil di pojok kartu. Kosongkan jika tidak perlu." },
+      { name: "price", label: "Harga", type: "text", placeholder: "Rp 150.000" },
+      { name: "description", label: "Deskripsi", type: "textarea", placeholder: "Deskripsi singkat produk..." },
+      { name: "mediaUrl", label: "Foto / Video Produk", type: "media", help: "Upload foto atau video. Video akan dikompres otomatis." },
+      { name: "link", label: "Tautan Pemesanan (opsional)", type: "text", placeholder: "https://shopee.co.id/..." },
+      { name: "order", label: "Urutan", type: "number", help: "Angka kecil tampil lebih dulu." },
     ],
   },
 };

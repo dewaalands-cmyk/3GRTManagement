@@ -15,6 +15,7 @@ function delegate(resource: string): any {
     partners: prisma.partner,
     services: prisma.service,
     packages: prisma.package,
+    merchandises: prisma.merchandise,
   };
   return map[resource] ?? null;
 }
