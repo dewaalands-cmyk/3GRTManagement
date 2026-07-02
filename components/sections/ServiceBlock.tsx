@@ -97,7 +97,7 @@ export function ServiceBlock({ title, description, imageUrl, imagePosition = "ri
           </h3>
           <div className="space-y-4">
             {paragraphs.map((p, i) => (
-              <p key={i} className="max-w-xl text-lg leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
+              <p key={i} className={`text-lg leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)] ${imageUrl ? "max-w-xl" : ""}`}>
                 {p}
               </p>
             ))}
@@ -105,19 +105,11 @@ export function ServiceBlock({ title, description, imageUrl, imagePosition = "ri
         </div>
       </Reveal>
 
-      {/* Kolom Media (foto / video) */}
-      {imageUrl ? (
+      {/* Kolom Media (foto / video) — tidak muncul jika tidak ada media */}
+      {imageUrl && (
         <Reveal className={`w-full md:w-[45%] ${imgLeft ? "md:order-1" : "md:order-2"}`} delay={0.08}>
           <MediaBlock url={imageUrl} title={title} imgLeft={imgLeft} />
         </Reveal>
-      ) : (
-        <div className={`hidden w-full md:block md:w-[45%] ${imgLeft ? "md:order-1" : "md:order-2"}`}>
-          <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-            <span className="font-heading text-6xl font-black uppercase text-white/10">
-              {title.slice(0, 2)}
-            </span>
-          </div>
-        </div>
       )}
     </div>
   );
