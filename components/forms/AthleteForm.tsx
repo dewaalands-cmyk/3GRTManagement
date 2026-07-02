@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
 import { UserPlus, CheckCircle2, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Label, Input, Textarea } from "./FormField";
 
-export function AthleteForm() {
+const LIGHT_INPUT = "bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-crimson";
+const LIGHT_LABEL = "text-gray-400";
+
+export function AthleteForm({ light = false }: { light?: boolean }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [form, setForm] = useState({ name: "", contact: "", sport: "", record: "" });
 
@@ -29,11 +33,18 @@ export function AthleteForm() {
 
   if (status === "success") {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-ink-2 p-10 text-center">
+      <div className={cn(
+        "flex flex-col items-center justify-center rounded-2xl p-10 text-center",
+        light ? "bg-white shadow-xl border border-gray-100" : "border border-line bg-ink-2"
+      )}>
         <CheckCircle2 className="h-14 w-14 text-amber" />
-        <h3 className="mt-4 font-heading text-xl font-semibold text-bone">Pendaftaran Terkirim!</h3>
-        <p className="mt-2 text-sm text-muted">Tim matchmaking kami akan meninjau profil Anda dan menghubungi via kontak yang diberikan.</p>
-        <button onClick={() => setStatus("idle")} className="mt-5 font-heading text-sm font-semibold uppercase tracking-wide text-amber hover:underline">
+        <h3 className={cn("mt-4 font-heading text-xl font-semibold", light ? "text-gray-900" : "text-bone")}>
+          Pendaftaran Terkirim!
+        </h3>
+        <p className={cn("mt-2 text-sm", light ? "text-gray-500" : "text-muted")}>
+          Tim matchmaking kami akan meninjau profil Anda dan menghubungi via kontak yang diberikan.
+        </p>
+        <button onClick={() => setStatus("idle")} className="mt-5 font-heading text-sm font-semibold uppercase tracking-wide text-crimson hover:underline">
           Daftar lagi
         </button>
       </div>
@@ -41,31 +52,38 @@ export function AthleteForm() {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-2xl border border-line bg-ink-2 p-8">
-      <h3 className="font-heading text-xl font-semibold uppercase tracking-wide text-bone">Daftar Sebagai Atlet</h3>
-      <p className="mt-1 text-sm text-muted">Ingin naik ring bersama 3GRT? Isi data di bawah.</p>
+    <form onSubmit={submit} className={cn(
+      "rounded-2xl p-8",
+      light ? "bg-white shadow-xl border border-gray-100" : "border border-line bg-ink-2"
+    )}>
+      <h3 className={cn("font-heading text-xl font-semibold uppercase tracking-wide", light ? "text-gray-900" : "text-bone")}>
+        Daftar Sebagai Atlet
+      </h3>
+      <p className={cn("mt-1 text-sm", light ? "text-gray-500" : "text-muted")}>
+        Ingin naik ring bersama 3GRT? Isi data di bawah.
+      </p>
 
       <div className="mt-6 space-y-4">
         <div>
-          <Label htmlFor="a-name">Nama Lengkap</Label>
-          <Input id="a-name" required value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Nama atlet" />
+          <Label htmlFor="a-name" className={light ? LIGHT_LABEL : ""}>Nama Lengkap</Label>
+          <Input id="a-name" required value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Nama atlet" className={light ? LIGHT_INPUT : ""} />
         </div>
         <div>
-          <Label htmlFor="a-contact">No. WhatsApp</Label>
-          <Input id="a-contact" required value={form.contact} onChange={(e) => set("contact", e.target.value)} placeholder="08xx" />
+          <Label htmlFor="a-contact" className={light ? LIGHT_LABEL : ""}>No. WhatsApp</Label>
+          <Input id="a-contact" required value={form.contact} onChange={(e) => set("contact", e.target.value)} placeholder="08xx" className={light ? LIGHT_INPUT : ""} />
         </div>
         <div>
-          <Label htmlFor="a-sport">Cabang Olahraga</Label>
-          <Input id="a-sport" required value={form.sport} onChange={(e) => set("sport", e.target.value)} placeholder="Muay Thai / MMA / Tinju / Kickboxing" />
+          <Label htmlFor="a-sport" className={light ? LIGHT_LABEL : ""}>Cabang Olahraga</Label>
+          <Input id="a-sport" required value={form.sport} onChange={(e) => set("sport", e.target.value)} placeholder="Muay Thai / MMA / Tinju / Kickboxing" className={light ? LIGHT_INPUT : ""} />
         </div>
         <div>
-          <Label htmlFor="a-record">Rekam Jejak / Pengalaman</Label>
-          <Textarea id="a-record" required value={form.record} onChange={(e) => set("record", e.target.value)} placeholder="Kelas, jumlah pertandingan, prestasi, dll." />
+          <Label htmlFor="a-record" className={light ? LIGHT_LABEL : ""}>Rekam Jejak / Pengalaman</Label>
+          <Textarea id="a-record" required value={form.record} onChange={(e) => set("record", e.target.value)} placeholder="Kelas, jumlah pertandingan, prestasi, dll." className={light ? LIGHT_INPUT : ""} />
         </div>
       </div>
 
       {status === "error" && (
-        <p className="mt-4 text-sm text-crimson-light">Gagal mengirim. Coba lagi atau hubungi via WhatsApp.</p>
+        <p className="mt-4 text-sm text-crimson">Gagal mengirim. Coba lagi atau hubungi via WhatsApp.</p>
       )}
 
       <button

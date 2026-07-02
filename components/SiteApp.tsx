@@ -303,11 +303,25 @@ export function SiteApp({ content, services, events, testimonials, partners, mer
               </div>
             </section>
 
-            <section className="border-t border-line bg-ink-2 py-20 md:py-28">
-              <div className="wrap">
-                <SectionHeading eyebrow="Untuk Para Petarung" title="Bergabung Sebagai Atlet" subtitle="Punya semangat juang dan ingin naik ring? Daftarkan diri Anda dan tim matchmaking kami akan meninjau profil Anda." align="center" className="mb-12" />
+            <section className="relative overflow-hidden bg-white py-20 md:py-28">
+              {/* Gradient accent line separating from dark section above */}
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-crimson via-amber to-crimson" />
+              {/* Subtle background texture */}
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(220,38,38,0.06),transparent)]" />
+              <div className="wrap relative">
+                <Reveal className="mb-12 text-center">
+                  <p className="mb-3 font-heading text-xs font-bold uppercase tracking-[0.2em] text-crimson">
+                    Untuk Para Petarung
+                  </p>
+                  <h2 className="font-heading text-3xl font-black uppercase leading-[1.05] text-gray-900 sm:text-4xl md:text-5xl">
+                    Bergabung Sebagai Atlet
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-xl font-medium text-gray-500">
+                    Punya semangat juang dan ingin naik ring? Daftarkan diri Anda dan tim matchmaking kami akan meninjau profil Anda.
+                  </p>
+                </Reveal>
                 <div className="mx-auto max-w-2xl">
-                  <Reveal><AthleteForm /></Reveal>
+                  <Reveal><AthleteForm light /></Reveal>
                 </div>
               </div>
             </section>
