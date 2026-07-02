@@ -1,4 +1,5 @@
-﻿import { SmartImage } from "@/components/ui/SmartImage";
+﻿import { ArrowUpRight } from "lucide-react";
+import { SmartImage } from "@/components/ui/SmartImage";
 
 interface Partner { id: string; name: string; logoUrl?: string | null; url?: string | null }
 
@@ -30,8 +31,8 @@ export function PartnerStrip({ partners }: { partners: Partner[] }) {
                 <div className="text-center">
                   <h3 className="font-heading text-base font-bold uppercase tracking-wide text-bone">{p.name}</h3>
                   {p.url && (
-                    <span className="mt-2 inline-block font-heading text-xs font-semibold uppercase tracking-widest text-crimson">
-                      Kunjungi Website â†’
+                    <span className="mt-2 inline-flex items-center gap-1 font-heading text-xs font-semibold uppercase tracking-widest text-crimson">
+                      Kunjungi Website <ArrowUpRight className="h-3.5 w-3.5" />
                     </span>
                   )}
                 </div>
