@@ -57,15 +57,17 @@ export async function getMerchandises() {
   try {
     const rows = await prisma.merchandise.findMany({ orderBy: order });
     return rows.map((r) => {
-      let mediaUrls: string[] = [];
+      let count = 0;
       if (r.mediaUrls) {
-        try { mediaUrls = JSON.parse(r.mediaUrls as string); } catch { mediaUrls = []; }
+        try {
+          const arr = JSON.parse(r.mediaUrls as string);
+          count = Array.isArray(arr) ? arr.length : 0;
+        } catch { count = 0; }
       }
       return {
         ...r,
-        mediaUrls: mediaUrls.map((url, i) =>
-          toProxyUrl(url, `resource:merchandises:${r.id}:mediaUrls:${i}`)
-        ),
+        // Dedicated endpoint — avoids generic proxy key encoding/decoding entirely
+        mediaUrls: Array.from({ length: count }, (_, i) => `/api/merch-img?id=${r.id}&i=${i}`),
       };
     });
   } catch { return []; }
