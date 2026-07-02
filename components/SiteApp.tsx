@@ -316,7 +316,7 @@ export function SiteApp({ content, services, events, testimonials, partners, mer
                   <h2 className="font-heading text-3xl font-black uppercase leading-[1.05] text-gray-900 sm:text-4xl md:text-5xl">
                     Bergabung Sebagai Atlet
                   </h2>
-                  <p className="mx-auto mt-4 max-w-xl font-medium text-gray-500">
+                  <p className="mx-auto mt-4 max-w-xl font-medium text-gray-600">
                     Punya semangat juang dan ingin naik ring? Daftarkan diri Anda dan tim matchmaking kami akan meninjau profil Anda.
                   </p>
                 </Reveal>

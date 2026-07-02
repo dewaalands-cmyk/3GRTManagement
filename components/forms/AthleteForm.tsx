@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Label, Input, Textarea } from "./FormField";
 
 const LIGHT_INPUT = "bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-crimson";
-const LIGHT_LABEL = "text-gray-400";
+const LIGHT_LABEL = "text-gray-700";
 
 export function AthleteForm({ light = false }: { light?: boolean }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -41,7 +41,7 @@ export function AthleteForm({ light = false }: { light?: boolean }) {
         <h3 className={cn("mt-4 font-heading text-xl font-semibold", light ? "text-gray-900" : "text-bone")}>
           Pendaftaran Terkirim!
         </h3>
-        <p className={cn("mt-2 text-sm", light ? "text-gray-500" : "text-muted")}>
+        <p className={cn("mt-2 text-sm", light ? "text-gray-600" : "text-muted")}>
           Tim matchmaking kami akan meninjau profil Anda dan menghubungi via kontak yang diberikan.
         </p>
         <button onClick={() => setStatus("idle")} className="mt-5 font-heading text-sm font-semibold uppercase tracking-wide text-crimson hover:underline">
@@ -59,7 +59,7 @@ export function AthleteForm({ light = false }: { light?: boolean }) {
       <h3 className={cn("font-heading text-xl font-semibold uppercase tracking-wide", light ? "text-gray-900" : "text-bone")}>
         Daftar Sebagai Atlet
       </h3>
-      <p className={cn("mt-1 text-sm", light ? "text-gray-500" : "text-muted")}>
+      <p className={cn("mt-1 text-sm", light ? "text-gray-600" : "text-muted")}>
         Ingin naik ring bersama 3GRT? Isi data di bawah.
       </p>
 
